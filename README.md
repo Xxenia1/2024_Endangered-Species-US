@@ -1,9 +1,6 @@
 # Spatial Analysis of Endangered Species Distribution and Biodiversity Risk Factors in the United States
 
 An interactive data visualization and spatial analysis platform designed to explore the geographical clustering of endangered species across the U.S. and evaluate how socioeconomic and environmental drivers impact biodiversity loss.
-
-**Live Demo:** [https://xxenia1.github.io/2024_Endangered-Species-US/](https://xxenia1.github.io/2024_Endangered-Species-US/)
-
 ---
 
 ## 1. Project Positioning & Research Questions
