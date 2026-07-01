@@ -1,16 +1,22 @@
-# Spatial Analysis of Endangered Species Distribution and Biodiversity Risk Factors in the United States
+# Designing an Interactive Human-AI Decision Support System for Endangered Species Conservation
 
-An interactive data visualization and spatial analysis platform designed to explore the geographical clustering of endangered species across the U.S. and evaluate how socioeconomic and environmental drivers impact biodiversity loss.
+Recent advances in machine learning and geospatial modeling have significantly improved the ability to predict habitat suitability for endangered species. However, despite increasing predictive accuracy, these models are often difficult for conservation practitioners and stakeholders to interpret and apply in real-world decision-making contexts. As a result, there is a growing gap between model outputs and actionable conservation decisions.
+
+This gap highlights the need for human-centered systems that not only generate predictions, but also support interpretation, exploration, and trust in AI-assisted ecological decision-making.
+
+## Keywords
+Human-Computer Interaction (HCI), Information Visualization, Human-AI Interaction, Explainable AI (XAI), Decision Support Systems, Geospatial Visualization, Visual Analytics, Environmental Decision-Making
 ---
 
 ## 1. Project Positioning & Research Questions
 
-While biodiversity faces unprecedented acceleration in extinction rates, existing public platforms and institutional databases often present data through fragmented, static tables. This project bridges the gap by delivering a unified spatial-temporal analysis framework.
+While biodiversity faces unprecedented acceleration in extinction rates, existing public platforms and institutional databases often present data through fragmented, static tables. This interactive system aims to help people understand and use AI-generated ecological predictions in conservation decision-making.
 
 ### Core Research Questions
-* **RQ1:** Does the geographic distribution of endangered species exhibit significant spatial variation or clustering across different U.S. states? (e.g., heavily concentrated in California, Florida, Texas, and Hawaii).
-* **RQ2:** Which socioeconomic (e.g., population density, GDP, urbanization) and environmental (e.g., forest cover, climate risk) factors are most heavily correlated with species endangerment?
-* **RQ3:** Can we synthesize a dynamic composite risk index to predict and identify future biodiversity hotspots and high-risk zones?
+* **RQ1:** How can interactive visualization improve users’ understanding of AI-generated habitat suitability predictions?
+* **RQ2:** How can uncertainty in ecological prediction models be effectively communicated to support decision-making?
+* **RQ3:** How does explainable AI influence trust and confidence in conservation decision-making?
+* **RQ3:** How can human-AI interaction design improve decision quality in endangered species conservation?
 
 ---
 
@@ -49,11 +55,6 @@ Datasets originating from multiple agencies and spatial scales are normalized, a
 *The distribution of different endangered species from Environmental Conservation Online System: USFWS Threatened & Endangered Species Active Critical Habitat Report: https://ecos.fws.gov/ecp/report/critical-habitat; Current Range of All Species: https://ecos.fws.gov/ecp/species/2776*     
 
 *Current Listed Species Summary from Environmental Conservation Online System: https://ecos.fws.gov/ecp/report/boxscore*
-
-
-
-### Wireframes
-![eed7b38198d62beeaa89345db734eaf](https://github.com/user-attachments/assets/7e81147e-10dd-4446-a18c-ab3cb747fd01)
 
 
 
