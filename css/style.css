@@ -1,393 +1,535 @@
-/*insert style here*/
+/* style.css */
 
-/* Stylesheet by Zhiyi Li, 2024 */
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    width: 100%;
+    min-height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f5f8f6;
+    color: #1f2933;
+}
 
 body {
-    background-color: #f9f9f9;
-    font-family: 'Arial', sans-serif;
+    min-height: 100vh;
 }
 
-.countries {
-    fill: #FFF;
-    stroke: #CCC;
-    stroke-width: 2px;
+/* =========================
+   Initial page
+========================= */
+
+#initialPage {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(18, 32, 26, 0.94);
+    color: white;
+    cursor: pointer;
 }
 
-.countries {
-    fill: #FFF;
-    stroke: #CCC;
-    stroke-width: 2px;
+#initialPage .content {
+    max-width: 720px;
+    padding: 32px;
+    text-align: center;
 }
 
-.gratBackground {
-    fill: #F5F5F5;
+#initialPage h1 {
+    margin: 0 0 18px;
+    font-size: 36px;
 }
 
-
-.gratLines {
-    fill: none;
-    stroke: #999;
-    stroke-width: 1px;
+#initialPage p {
+    font-size: 17px;
+    line-height: 1.6;
 }
 
-.regions {
-    stroke: #000;
-    stroke-width: 0.5px;
-    stroke-linecap: round;
+/* =========================
+   Header
+========================= */
+
+.app-header {
+    min-height: 72px;
+    padding: 14px 22px;
+    background: #ffffff;
+    border-bottom: 1px solid #d9e2ec;
 }
 
-.dropdown {
-    position: absolute;
-    top: 210px;
-    left: 1400px;
-    z-index: 10;
-    font-family: sans-serif;
-    font-size: 1em;
-    font-weight: bold;
-    padding: 2px;
-    border: 1px solid #999;
-    box-shadow: 2px 2px 4px #999;
+.app-header h1 {
+    margin: 0;
+    color: #174936;
+    font-size: 24px;
 }
 
-
-.container {
-    display: flex;           /* Establishes a flex container */
-    justify-content: center; /* Centers children horizontally */
-    align-items: stretch;    /* Stretches children to fit the container height */
-    width: 85%;             /* Optional: spans the full width of the viewport */
-    height: 100vh;           /* Optional: spans the full height of the viewport */
-}
-.chart-container {
-    flex: 1;                 /* Takes up 1 part of the available space */
-    margin: 20px 0 0 20px;
-    height:500px
-    /* Additional styling as needed */
+.app-header p {
+    margin: 5px 0 0;
+    color: #52606d;
+    font-size: 13px;
 }
 
-.map-container {
-    flex: 2;                 /* Takes up 2 parts of the available space, making it larger than the chart */
+/* =========================
+   Main layout
+========================= */
+
+.dashboard-layout {
+    display: grid;
+    grid-template-columns: 250px minmax(0, 1fr) 300px;
+    grid-template-rows: clamp(560px, 68vh, 720px) auto;
+
+    grid-template-areas:
+        "explorer map report"
+        "ranking ranking ranking";
+
+    gap: 12px;
+    width: 100%;
+    min-height: calc(100vh - 72px);
+    padding: 12px;
+}
+
+.explorer-panel,
+.map-workspace,
+.state-workspace {
+    min-width: 0;
+    min-height: 0;
+}
+
+.explorer-panel {
+    grid-area: explorer;
+    padding: 16px;
+    overflow-y: auto;
+}
+
+.map-workspace {
+    grid-area: map;
+    position: relative;
+    overflow: hidden;
+}
+
+.state-workspace {
+    grid-area: report;
+    padding: 16px;
+    overflow-y: auto;
+}
+
+.ranking-workspace {
+    grid-area: ranking;
+    min-width: 0;
+}
+
+/* =========================
+   Explorer
+========================= */
+
+.control-group {
+    margin-top: 20px;
+}
+
+.control-group label {
+    display: block;
+    margin-bottom: 7px;
+    color: #334e68;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.dropdown-container {
+    position: relative;
+}
+
+.dropdown,
+.control-select {
+    position: static;
+    width: 100%;
+    margin: 0;
+    padding: 9px 10px;
+    border: 1px solid #bcccdc;
+    border-radius: 7px;
+    background: #ffffff;
+    box-shadow: none;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.control-help {
+    margin: 8px 0 0;
+    color: #68737d;
+    font-size: 12px;
+    line-height: 1.45;
+}
+
+.search-container {
+    width: 100%;
+}
+
+#stateSearch {
+    position: static;
+    width: 100%;
+    margin: 0 0 8px;
+    padding: 10px;
+    border: 1px solid #bcccdc;
+    border-radius: 7px;
+    font-size: 14px;
+}
+
+#searchButton {
+    position: static;
+    width: 100%;
+    margin: 0;
+    padding: 10px 12px;
+    border: 0;
+    border-radius: 7px;
+    background: #0da982;
+    color: white;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+#searchButton:hover {
+    background: #0a8c6b;
+}
+
+/* =========================
+   Map
+========================= */
+
+.map-container,
+#map {
+    position: relative;
+    width: 100%;
+    height: 100%;
 }
 
 #map {
-    position:relative;/*border: medium solid #999;*/
-    margin: 20px 0 0 0px;
+    overflow: hidden;
+}
+
+#map svg,
+.map {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.map-toolbar {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    z-index: 30;
 }
 
 #resetMap {
-    position:absolute;
-    padding: 8px 16px;
-    background-color: #f8f9fa;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    position: static;
+    padding: 7px 12px;
+    border: 1px solid #bcccdc;
+    border-radius: 7px;
+    background: white;
     cursor: pointer;
-    outline: none;
-}
-#resetMap:hover {
-    background-color: #e9ecef;
 }
 
+.countries {
+    fill: #ffffff;
+    stroke: #cccccc;
+    stroke-width: 1.2px;
+}
+
+.gratBackground {
+    fill: #f5f5f5;
+}
+
+.gratLines {
+    fill: none;
+    stroke: #a1a1a1;
+    stroke-width: 0.8px;
+}
+
+.regions {
+    stroke: #ffffff;
+    stroke-width: 0.9px;
+}
+
+.symbol {
+    transition:
+        opacity 0.25s ease,
+        stroke-width 0.25s ease;
+}
+
+/* Map legend */
+#map-legend {
+    position: absolute;
+    right: 14px;
+    bottom: 14px;
+    z-index: 25;
+    width: 190px;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.94);
+    border: 1px solid #cad5df;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(20, 40, 30, 0.08);
+}
+
+.legend-title {
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.legend-note {
+    margin-top: 5px;
+    color: #68737d;
+    font-size: 11px;
+    line-height: 1.4;
+}
+
+/* =========================
+   Northeast inset
+========================= */
+
+#northeast-inset {
+    position: absolute;
+    right: 14px;
+    top: 14px;
+    z-index: 24;
+    width: 190px;
+    height: 150px;
+    padding: 8px;
+    background: rgba(255, 255, 255, 0.96);
+    border: 1px solid #bcccdc;
+    border-radius: 8px;
+    box-shadow: 0 4px 14px rgba(20, 40, 30, 0.12);
+}
+
+.inset-title {
+    margin-bottom: 4px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+#northeast-map {
+    width: 100%;
+    height: calc(100% - 20px);
+}
+
+#northeast-map svg {
+    width: 100%;
+    height: 100%;
+}
+
+.inset-region {
+    fill: #d3d3d3;
+    stroke: #ffffff;
+    stroke-width: 1.1px;
+}
+
+.inset-symbol {
+    fill: #008866;
+    fill-opacity: 0.72;
+    stroke: #ffffff;
+    stroke-width: 0.8px;
+}
+
+/* =========================
+   State report
+========================= */
+
+#right-panel {
+    position: static;
+    width: auto;
+    height: auto;
+    margin: 0;
+    box-shadow: none;
+}
+
+.empty-state {
+    margin-top: 22px;
+    padding: 18px 10px;
+    color: #52606d;
+    text-align: center;
+}
+
+.empty-state strong {
+    color: #1f2933;
+}
+
+.empty-state p {
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+/* =========================
+   Full-width chart
+========================= */
+
+.ranking-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 6px;
+}
+
+.ranking-header p {
+    margin: 5px 0 0;
+    color: #68737d;
+    font-size: 12px;
+}
+
+.chart-container {
+    position: relative;
+    width: 100%;
+    height: clamp(260px, 26vw, 380px);
+    overflow: hidden;
+}
 
 .chart {
-    position:absolute;
-    top:300px;
-    padding:10px;
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-
-    bottom: 200px;
-}
-
-.species-list {
-    top: 300px;
-    margin-bottom: 20px;
-    padding: 10px;
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    margin: 20px 20px 0 0;
+    display: block;
+    width: 100%;
+    height: 100%;
 }
 
 .chartTitle {
-    font-size: 1.1em;
-    font-weight: bold;
+    font-size: 14px;
+    font-weight: 700;
 }
 
 .chartFrame {
     fill: none;
-    stroke: #999;
-    stroke-width: 3px;
-    shape-rendering: crispEdges;
+    stroke: #9aa5b1;
+    stroke-width: 1px;
 }
 
 .axis path,
 .axis line {
-    fill: none;
-    stroke: #999;
-    stroke-width: 1px;
-    shape-rendering: crispEdges;
+    stroke: #9aa5b1;
 }
 
 .axis text {
-    font-family: sans-serif;
-    font-size: 0.8em;
-    fill: #999;
+    fill: #52606d;
+    font-size: 10px;
 }
 
-#chartDescription {
-    width: 100%; /* Adjust width as necessary */
-    padding: 300px;
-    background-color: #f4f4f4; /* Light grey background for better readability */
-    border-top: 1px solid #ccc; /* Adds a line between the chart and description */
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Optional: adds subtle shadow for depth */
-    margin-top: 10px; /* Ensures there is a space between the chart and the description */
-    font-size: 14px;
-    color: #333;
-    text-align: center; /* Centers the text */
-    bottom: 300px;
+.bars {
+    transition:
+        opacity 0.2s ease,
+        fill 0.2s ease;
 }
 
-
-option {
-    font-weight: normal;
+.filter-muted {
+    opacity: 0.16 !important;
 }
 
+.filter-active {
+    opacity: 1 !important;
+    stroke: #173f2f;
+    stroke-width: 1.5px;
+}
+
+/* =========================
+   Tooltips
+========================= */
+
+.infolabel,
+#tooltip,
+.tooltip {
+    position: absolute;
+    z-index: 9999;
+}
+
+.infolabel {
+    min-width: 110px;
+    padding: 7px 10px;
+    background: #111111;
+    color: white;
+    border-radius: 5px;
+}
 
 .infolabel h1 {
-    margin: 0 20px 0 0;
-    padding: 0;
     display: inline-block;
-    line-height: 1.2em;
-}
-
-.infolabel {    
-    margin: 0 20px 0 10px;    
-    position: absolute;
-    height: 56px;
-    min-width: 100px;
-    color: #fff;
-    background-color: #000000;
-    border: solid thin #fff;
-    padding: 6px 10px;
-    top: -75px;
-}
-
-/* Style for the page title */
-.page-title {
-    text-align: center; /* Center align the title */
-    margin-top: 20px; /* Adjust top margin as needed */
-    padding: 10px; /* Add padding for space around the title */
-    /*background-color: rgb(35, 121, 52); /* Add background color */
-    color: #205223;
-    /*color: white; /* Add text color */
-    font-size: 28px; /* Adjust font size */
-}
-
-/* Style for the introduction panel */
-.introduction-panel {
-    background-color: #f2f2f2; /* Add background color */
-    padding: 2px; /* Add padding for space around the content */
-    font-size: 18px; /* Adjust font size */
-    padding-left: 20px;
-    padding-right: 20px;
-    margin: 0px 20px 0px 20px;
-
-}
-#toolDescriptionContainer {
-    padding: 10px;
-    margin: 10px;
-    background-color: #f9f9f9;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
-.tool-description p {
-    font-size: 14px;
-    color: #333;
-}
-
-
-.small-text {
-    font-size: 0.8em; /* Adjust the font size as needed */
-}
-
-.controls {
-    position: absolute;
-    top: 10px; /* Adjust as needed */
-    left: 50%; /* Center align the controls */
-    transform: translateX(-50%); /* Ensure it's centered regardless of the actual width */
-    z-index: 1000; /* Ensures the controls stay on top of the map layers */
-    background: rgba(255, 255, 255, 0.8); /* Semi-transparent white background */
-    padding: 10px;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-    display: flex;
-    justify-content: flex-start;
-    gap: 10px;
-    padding: 10px;
-}
-
-.input, .dropdown {
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 16px;
-    margin: 20px 20px 40px 0px;
-}
-
-#stateSearch {
-    position:absolute;
-    display:flex;
-    justify-content: space-between;
-    margin-right: 10px; /* Add some spacing between the input and button */
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 16px;
-}
-  
-#searchButton {
-    position: absolute;
-    left: 260px;
-    z-index: 10;
-    padding: 10px 12px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    margin-right: 10px;
-    background-color: #0da982;/*rgb(35, 121, 52); /* Blue color for the button */
-    color: #fff; /* White text color */
-    font-size: 16px;
-    cursor: pointer;
-}
-
-
-#searchDescription {
-    background-color: rgb(35, 121, 52);
-}
-
-#right-panel {
-    position: absolute;
-    right: 0;
-    width: 18.5%;
-    height: 680px;
-    overflow-y: auto; /* Enables scrolling if content is too long */
-    background-color:#FFFFFF;
-    overflow-y: auto;
-    padding: 20px;
-    box-sizing: border-box;
-    margin: 20px 20px 0px 0px;
-    box-shadow: -4px 0 6px -2px #e0e0e0; /* Soft shadow on the left edge */
-}
-
-/* Group Headers in the Right Panel */
-.group-header {
-    margin-top: 20px;
-    font-weight: bold;
-    background: linear-gradient(145deg, #f5f5f5, #bae5d9);
-    padding: 5px 15px;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* Subtle shadow for depth */
-}
-
-.species-list {
-    list-style-type: none;
-    padding-left: 20px;
-}
-
-.species-list li {
-    padding: 5px 8px;
-    transition: background-color 0.3s; /* Smooth transition for hover effect */
-}
-
-.species-list li:hover {
-    background-color: #f7f7f7; /* Highlight item on hover */
-    cursor: pointer; /* Indicates interactivity */
+    margin: 0 10px 0 0;
+    font-size: 18px;
 }
 
 #tooltip {
-    position: absolute;  
-    visibility: hidden;  
-    background-color: white;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    z-index: 1000;  
+    visibility: hidden;
     max-width: 400px;
-    word-wrap: break-word;
-    padding:10px;
-    overflow: hidden;  
-    text-overflow: ellipsis;  
-    white-space: normal; 
-    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-}
-#toolDescription {
     padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #f9f9f9;
-    margin-top: 10px;
-}
-.tooltip {
-    position: absolute;
-    background-color: #f9f9f9;
-    border: 1px solid #ccc;
-    padding: 5px;
-    border-radius: 3px;
-    display: none;  /* Initially hidden */
-    z-index: 100;
-    white-space: nowrap;
-}
-
-#resetButton + #resetTooltip {  /* Positions the tooltip right above the button */
-    margin-top: -35px;  /* Adjust as necessary */
-    margin-left: -10px;  /* Centers tooltip based on the button's width */
-}
-
-#dropdown-container + #dropdownTooltip {
-    margin-top: -30px;  /* Moves the tooltip above the dropdown */
-    margin-left: 0px;   /* Aligns with the left edge of the dropdown */
-}
-
-
-.map-tool:hover + .tooltip {
-    display: block;
-}
-
-#initialPage {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.8); /* Semi-transparent black background */
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    z-index: 1000; /* Ensure it's above all other content */
-}
-
-#initialPage .content {
-    max-width: 600px;
-    padding: 20px;
-}
-
-.tooltip {
-    width: auto;
-    background-color: black;
-    color: white;
-    text-align: center;
+    background: white;
+    border: 1px solid #cccccc;
     border-radius: 6px;
-    padding: 5px 10px;
-    position: absolute;
-    z-index: 1;
-    bottom: 100%;
-    left: 50%;
-    margin-left: -60px; /* Adjust as necessary */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
 }
 
-.search-bar:hover + .tooltip {
-    visibility: visible;
+.tooltip {
+    display: none;
 }
 
+#toolDescriptionContainer,
+.page-title,
+.introduction-panel {
+    display: none !important;
+}
 
+/* =========================
+   Responsive
+========================= */
+
+@media (max-width: 1180px) {
+    .dashboard-layout {
+        grid-template-columns: 230px minmax(520px, 1fr) 270px;
+    }
+
+    #northeast-inset {
+        width: 215px;
+    }
+}
+
+@media (max-width: 900px) {
+    .dashboard-layout {
+        grid-template-columns: 220px minmax(0, 1fr);
+        grid-template-rows: minmax(460px, 60vh) auto auto;
+        grid-template-areas:
+            "explorer map"
+            "report report"
+            "ranking ranking";
+    }
+
+    #northeast-inset {
+        display: none;
+    }
+}
+
+@media (max-width: 640px) {
+    .app-header {
+        padding: 12px 16px;
+    }
+
+    .app-header h1 {
+        font-size: 20px;
+    }
+
+    .dashboard-layout {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: auto minmax(380px, 55vh) auto auto;
+        grid-template-areas:
+            "explorer"
+            "map"
+            "report"
+            "ranking";
+        padding: 10px;
+    }
+
+    .explorer-panel,
+    .state-workspace {
+        max-height: none;
+    }
+
+    .chart-container {
+        height: clamp(240px, 70vw, 320px);
+    }
+}
