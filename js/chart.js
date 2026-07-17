@@ -1,242 +1,132 @@
-// chart.js
+// chart.js - the ranking view shares the exact state records used by the map
 
-function getDisplayName(attribute) {
-    var names = {
-        "Grand Total": "Species Count"
-    };
-
-    return names[attribute] || attribute;
-}
-
-function getFilteredCodes(csvData) {
-    var sorted = csvData.slice().sort(function(a, b) {
-        return (+b[expressed] || 0) - (+a[expressed] || 0);
+function getFilteredCodes(data) {
+    var sorted = data.slice().sort(function(a, b) {
+        return (getIndicatorNumericValue(b[expressed], expressed) || 0) -
+            (getIndicatorNumericValue(a[expressed], expressed) || 0);
     });
 
-    if (rankingScope === "top10") {
-        return new Set(
-            sorted.slice(0, 10).map(function(d) {
-                return d.adm1_code;
-            })
-        );
-    }
+    var countByScope = { top10: 10, top20: 20, bottom10: 10 };
+    var count = countByScope[rankingScope];
+    var scopedData = rankingScope === "bottom10"
+        ? sorted.slice(-count)
+        : count ? sorted.slice(0, count) : sorted;
 
-    if (rankingScope === "top20") {
-        return new Set(
-            sorted.slice(0, 20).map(function(d) {
-                return d.adm1_code;
-            })
-        );
-    }
-
-    if (rankingScope === "bottom10") {
-        return new Set(
-            sorted.slice(-10).map(function(d) {
-                return d.adm1_code;
-            })
-        );
-    }
-
-    return new Set(
-        sorted.map(function(d) {
-            return d.adm1_code;
-        })
-    );
-}
-
-function isScopeActive() {
-    return rankingScope !== "all";
-}
-
-function setChart(csvData, colorScale) {
-    currentCsvData = csvData;
-
-    d3.select(".chart-container")
-        .selectAll("svg.chart")
-        .remove();
-
-    var container =
-        document.querySelector(".chart-container");
-
-    var chartWidth =
-        Math.max(1, container.clientWidth || 900);
-
-    var responsiveChartHeight =
-        Math.max(1, container.clientHeight || chartHeight);
-
-    var innerWidth =
-        chartWidth -
-        chartMargins.left -
-        chartMargins.right;
-
-    var innerHeight =
-        responsiveChartHeight -
-        chartMargins.top -
-        chartMargins.bottom;
-
-    var sortedData =
-        csvData.slice().sort(function(a, b) {
-            return (+b[expressed] || 0) -
-                   (+a[expressed] || 0);
-        });
-
-    var xScale = d3.scaleBand()
-        .domain(
-            sortedData.map(function(d) {
-                return d.adm1_code;
-            })
-        )
-        .range([0, innerWidth])
-        .padding(0.12);
-
-    var maxValue =
-        d3.max(sortedData, function(d) {
-            return +d[expressed] || 0;
-        }) || 1;
-
-    var yScale = d3.scaleLinear()
-        .domain([0, maxValue])
-        .nice()
-        .range([innerHeight, 0]);
-
-    var chart = d3.select(".chart-container")
-        .append("svg")
-        .attr("class", "chart")
-        .attr(
-            "viewBox",
-            `0 0 ${chartWidth} ${responsiveChartHeight}`
-        )
-        .attr(
-            "preserveAspectRatio",
-            "xMidYMid meet"
-        );
-
-    var plot = chart.append("g")
-        .attr(
-            "transform",
-            `translate(${chartMargins.left},${chartMargins.top})`
-        );
-
-    plot.append("g")
-        .attr("class", "axis y-axis")
-        .call(
-            d3.axisLeft(yScale)
-                .ticks(5)
-        );
-
-    plot.append("g")
-        .attr("class", "axis x-axis")
-        .attr(
-            "transform",
-            `translate(0,${innerHeight})`
-        )
-        .call(
-            d3.axisBottom(xScale)
-                .tickSizeOuter(0)
-        )
-        .selectAll("text")
-        .attr("transform", "rotate(-45)")
-        .style("text-anchor", "end");
-
-    plot.append("rect")
-        .attr("class", "chartFrame")
-        .attr("width", innerWidth)
-        .attr("height", innerHeight);
-
-    var bars = plot.selectAll(".bars")
-        .data(sortedData)
-        .enter()
-        .append("rect")
-        .attr("class", function(d) {
-            return "bars " + d.adm1_code;
-        })
-        .attr("x", function(d) {
-            return xScale(d.adm1_code);
-        })
-        .attr("width", xScale.bandwidth())
-        .attr("y", function(d) {
-            return yScale(+d[expressed] || 0);
-        })
-        .attr("height", function(d) {
-            return innerHeight -
-                yScale(+d[expressed] || 0);
-        })
-        .style("fill", function(d) {
-            return colorScale(+d[expressed] || 0);
-        })
-        .on("mouseover", function(event, d) {
-            highlight(d);
-        })
-        .on("mouseout", function(event, d) {
-            dehighlight(d);
-        })
-        .on("mousemove", moveLabel);
-
-    bars.append("desc")
-        .text(
-            '{"stroke":"none","stroke-width":"0px"}'
-        );
-
-    updateChartFilter(csvData);
-    updateRankingHeading();
-}
-
-function updateChart(bars, n, colorScale) {
-    setChart(currentCsvData, colorScale);
+    return new Set(scopedData.map(function(d) { return d.State_Code; }));
 }
 
 function updateRankingHeading() {
-    var heading =
-        document.getElementById("rankingHeading");
+    var heading = document.getElementById("rankingHeading");
+    if (!heading) return;
 
-    if (!heading) {
-        return;
-    }
-
-    var scopeText = {
-        all: "All 51 States",
-        top10: "Top 10 Highlighted",
-        top20: "Top 20 Highlighted",
-        bottom10: "Bottom 10 Highlighted"
-    };
-
-    heading.textContent =
-        "State Ranking: " +
-        getDisplayName(expressed) +
-        " (" +
-        scopeText[rankingScope] +
-        ")";
+    heading.textContent = "State Ranking: " + getDisplayName(expressed) + " (All 51 States)";
 }
 
-function updateChartFilter(csvData) {
-    var activeCodes = getFilteredCodes(csvData);
-    var scopeActive = isScopeActive();
+function formatRankingValue(record) {
+    if (isIndicatorVariable(expressed)) {
+        return formatVisualValue(record[expressed], expressed);
+    }
+    var number = Number(record[expressed]);
+    return Number.isFinite(number) ? Math.round(number).toLocaleString() : "—";
+}
 
+function updateTopStates(data) {
+    var list = d3.select("#topStatesList");
+    if (list.empty()) return;
+
+    var topStates = data.slice().sort(function(a, b) {
+        return (getIndicatorNumericValue(b[expressed], expressed) || 0) -
+            (getIndicatorNumericValue(a[expressed], expressed) || 0);
+    }).slice(0, 5);
+
+    list.selectAll("li").remove();
+    topStates.forEach(function(record, index) {
+        var item = list.append("li");
+        item.append("span").attr("class", "top-state-rank").text(index + 1);
+        item.append("span").attr("class", "top-state-name")
+            .text(record.State + " (" + record.State_Code + ")");
+        item.append("strong").attr("class", "top-state-value")
+            .text(formatRankingValue(record));
+    });
+}
+
+function setChart(data) {
+    currentStateData = data;
+    d3.select(".chart-container").selectAll("svg.chart").remove();
+
+    var container = document.querySelector(".chart-container");
+    var width = Math.max(1, container.clientWidth || 900);
+    var height = Math.max(1, container.clientHeight || chartHeight);
+    var innerWidth = width - chartMargins.left - chartMargins.right;
+    var innerHeight = height - chartMargins.top - chartMargins.bottom;
+    var sortedData = data.slice().sort(function(a, b) {
+        return (getIndicatorNumericValue(b[expressed], expressed) || 0) -
+            (getIndicatorNumericValue(a[expressed], expressed) || 0);
+    });
+
+    var xScale = d3.scaleBand()
+        .domain(sortedData.map(function(d) { return d.State_Code; }))
+        .range([0, innerWidth])
+        .padding(0.12);
+    var maxValue = d3.max(sortedData, function(d) {
+        return getVisualValue(d[expressed]);
+    }) || 1;
+    var yScale = d3.scaleLinear().domain([0, maxValue]).nice().range([innerHeight, 0]);
+
+    var chart = d3.select(".chart-container").append("svg")
+        .attr("class", "chart")
+        .attr("viewBox", `0 0 ${width} ${height}`)
+        .attr("preserveAspectRatio", "xMidYMid meet");
+    var plot = chart.append("g")
+        .attr("transform", `translate(${chartMargins.left},${chartMargins.top})`);
+
+    plot.append("g").attr("class", "axis y-axis").call(d3.axisLeft(yScale).ticks(5));
+    plot.append("g").attr("class", "axis x-axis")
+        .attr("transform", `translate(0,${innerHeight})`)
+        .call(d3.axisBottom(xScale).tickSizeOuter(0));
+    plot.append("rect").attr("class", "chartFrame")
+        .attr("width", innerWidth).attr("height", innerHeight);
+
+    // Use the same scale as the active map mode: the Bubble Map's teal for
+    // species variables, and the Choropleth Map's indicator gradient for
+    // environmental variables.
+    var colorScale = getVisualizationColorScale(data);
+    plot.selectAll(".bars").data(sortedData).enter().append("rect")
+        .attr("class", function(d) { return "bars state-" + d.State_Code; })
+        .attr("x", function(d) { return xScale(d.State_Code); })
+        .attr("width", xScale.bandwidth())
+        .attr("y", function(d) { return yScale(getVisualValue(d[expressed])); })
+        .attr("height", function(d) { return innerHeight - yScale(getVisualValue(d[expressed])); })
+        .style("fill", function(d) {
+            return colorScale(getIndicatorNumericValue(d[expressed], expressed) || 0);
+        })
+        .on("click", function(event, d) { updatePanel(d); })
+        .on("mouseover", function(event, d) { highlight(d); setLabel(d); })
+        .on("mouseout", function(event, d) { dehighlight(d); })
+        .on("mousemove", function(event) { moveLabel(event); });
+
+    updateChartFilter(data);
+    updateRankingHeading();
+    updateTopStates(data);
+}
+
+function updateChartFilter(data) {
+    var activeCodes = getFilteredCodes(data);
+    var scopeActive = rankingScope !== "all";
     d3.selectAll(".bars")
         .classed("filter-active", function(d) {
-            return !scopeActive ||
-                activeCodes.has(d.adm1_code);
+            return scopeActive && activeCodes.has(d.State_Code);
         })
         .classed("filter-muted", function(d) {
-            return scopeActive &&
-                !activeCodes.has(d.adm1_code);
+            return scopeActive && !activeCodes.has(d.State_Code);
         });
-
-    updateRankingHeading();
 }
 
 var chartResizeFrame;
-
 window.addEventListener("resize", function() {
-    if (!currentCsvData.length) {
-        return;
-    }
-
+    if (!currentStateData.length) return;
     window.cancelAnimationFrame(chartResizeFrame);
     chartResizeFrame = window.requestAnimationFrame(function() {
-        setChart(
-            currentCsvData,
-            makeColorScale(currentCsvData)
-        );
+        setChart(currentStateData);
     });
 });

@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width">
         <title>Endangered Species in U.S.</title>
 
-        <!-- 外部样式 -->
+        <!-- External styles -->
         <link rel="stylesheet" href="lib/leaflet.css">
         <link rel="stylesheet" href="css/style.css">
 
@@ -34,13 +34,48 @@
                 across U.S. states.
             </p>
         </div>
+        <button id="themeToggle" class="theme-toggle" type="button" aria-pressed="false">
+            <span class="theme-toggle-icon" aria-hidden="true">☾</span>
+            <span class="theme-toggle-label">Dark mode</span>
+        </button>
     </header>
 
     <main class="dashboard-layout">
 
-        <!-- 第一行左侧 -->
+        <!-- Explorer -->
         <aside class="explorer-panel">
             <h2>Explorer</h2>
+
+            <section class="control-group">
+                <label for="analysisMode">Analysis Mode</label>
+                <div id="analysisModes" class="mode-list" role="list">
+                    <button class="mode-option is-active" type="button" data-analysis-mode="species">
+                        <span class="mode-icon">◈</span>
+                        <span><strong>Species Distribution</strong><small>Species patterns</small></span>
+                    </button>
+                    <button class="mode-option" type="button" data-analysis-mode="environment">
+                        <span class="mode-icon">◌</span>
+                        <span><strong>Environmental &amp; Socioeconomic</strong><small>Habitat and people</small></span>
+                    </button>
+                    <button class="mode-option" type="button" data-analysis-mode="risk">
+                        <span class="mode-icon">△</span>
+                        <span><strong>Risk Assessment</strong><small>Environmental risk</small></span>
+                    </button>
+                    <button class="mode-option" type="button" data-analysis-mode="conservation">
+                        <span class="mode-icon">♧</span>
+                        <span><strong>Conservation</strong><small>Protection outcomes</small></span>
+                    </button>
+                </div>
+                <select id="analysisMode" class="mode-select-input" aria-hidden="true" tabindex="-1">
+                    <option value="species">Species Distribution</option>
+                    <option value="environment">Environmental &amp; Socioeconomic</option>
+                    <option value="risk">Risk Assessment</option>
+                    <option value="conservation">Conservation</option>
+                </select>
+                <p class="control-help">
+                    Choose a thematic group to organize the available variables.
+                </p>
+            </section>
 
             <section class="control-group">
                 <label for="variable-control">Display Variable</label>
@@ -49,8 +84,15 @@
                         id="dropdownTooltip"
                         class="tooltip"
                     >
-                        Select a variable to update the map and chart.
+                        Select a variable within the active analysis mode.
                     </div>
+                </div>
+                <p id="variableHelp" class="control-help">
+                    Bubble size represents species distribution.
+                </p>
+                <div class="variable-info">
+                    <span class="variable-info-label">About this variable</span>
+                    <span id="variableInfoText">Each circle represents the selected species variable.</span>
                 </div>
             </section>
 
@@ -77,27 +119,26 @@
             </section>
         </aside>
 
-        <!-- 第一行中间 -->
+        <!-- Main map -->
         <section class="map-workspace">
             <div class="map-toolbar">
-                <button id="resetMap">Reset Map</button>
-                <div id="resetTooltip" class="tooltip">
-                    Reset the map to its original view.
-                </div>
+                <span class="toolbar-label">Map View Controls</span>
+                <button id="zoomIn" type="button" aria-label="Zoom in">+</button>
+                <button id="zoomOut" type="button" aria-label="Zoom out">−</button>
+                <button id="resetMap" type="button">Reset</button>
+                <button id="fitUs" type="button">Fit US</button>
             </div>
 
             <div class="map-container">
+                <div class="map-heading">
+                    <h2 id="mapHeading">Species Count</h2>
+                    <p id="mapSubheading">Bubble size represents the selected species variable.</p>
+                </div>
                 <div id="map"></div>
 
-                <!-- 东北部放大图 -->
-                <div id="northeast-inset">
-                    <div class="inset-title">Northeast Detail</div>
-                    <div id="northeast-map"></div>
-                </div>
-
-                <!-- 图例以后可以动态更新 -->
+                <!-- Legend is updated dynamically -->
                 <div id="map-legend">
-                    <div class="legend-title">Grand Total</div>
+                    <div class="legend-title">Species Count</div>
                     <div class="legend-note">
                         Circle size represents the selected variable.
                     </div>
@@ -105,8 +146,9 @@
             </div>
         </section>
 
-        <!-- 第一行右侧 -->
+        <!-- State report -->
         <aside id="right-panel" class="state-workspace">
+            <div class="panel-kicker">Selected State</div>
             <h2>State Report</h2>
 
             <div class="empty-state">
@@ -115,23 +157,33 @@
                     Click a state on the map or in the chart to view detailed
                     biodiversity, habitat, risk, and conservation information.
                 </p>
-            </div>
-        </aside>
+                    </div>
+                </aside>
 
-        <!-- 第二行：完整51州图表 -->
+        <!-- Full ranking chart -->
         <section class="ranking-workspace">
             <div class="ranking-header">
                 <div>
                     <h2 id="rankingHeading">
-                        State Ranking: Grand Total
+                        State Ranking: Species Count
                     </h2>
                     <p>
                         All states are retained. Filters highlight selected ranking groups.
                     </p>
                 </div>
             </div>
-
-            <div class="chart-container"></div>
+            <div class="ranking-layout">
+                <div class="ranking-chart-card">
+                    <div class="chart-container"></div>
+                </div>
+                <aside class="top-states-card">
+                    <div class="top-states-heading">
+                        <h3>Top 5 States</h3>
+                        <span id="topStatesVariable">Species Count</span>
+                    </div>
+                    <ol id="topStatesList" class="top-states-list"></ol>
+                </aside>
+            </div>
         </section>
 
         <div id="tooltip"></div>

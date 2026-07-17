@@ -1,108 +1,125 @@
-# This is for Non-spatial data cleaning
-# %%
-import os
+"""Build the validated non-spatial state dataset used by the spatial pipeline."""
+
+from pathlib import Path
+import sys
+
+# When this file is launched as ``python data_process/processing.py``, Python
+# puts data_process/ first on sys.path. Remove it so json.py cannot shadow the
+# standard-library json module imported internally by pandas.
+SCRIPT_DIR = Path(__file__).resolve().parent
+sys.path = [path for path in sys.path if Path(path or ".").resolve() != SCRIPT_DIR]
+
 import pandas as pd
 
-# Convert working catalog into root 
-BASE_DIR = "/Users/xeniax/Desktop/Reskill_Seeking/2024_Endangered-Species-US-main"
-if os.path.exists(BASE_DIR):
-    os.chdir(BASE_DIR)
 
-# define 50 states + DC (for filtering and cleaning)
-STATES_LIST = [
-    'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 
-    'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 
-    'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 
-    'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 
-    'New York', 'North Carolina', 'North Dakota', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 
-    'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 
-    'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming', 'District of Columbia'
+ROOT_DIR = Path(__file__).resolve().parents[1]
+DATA_DIR = ROOT_DIR / "data"
+STATES = [
+    "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware",
+    "District of Columbia", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa",
+    "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota",
+    "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey",
+    "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon",
+    "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah",
+    "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming",
 ]
 
-# read table format data:
-def load_csv(path, **kwargs):
-    for encoding in ['utf-8', 'latin-1', 'gbk', 'cp1252']:
+
+def read_csv(path, **kwargs):
+    """Read a CSV using a small set of expected encodings."""
+    for encoding in ("utf-8", "utf-8-sig", "latin-1", "cp1252"):
         try:
             return pd.read_csv(path, encoding=encoding, **kwargs)
         except UnicodeDecodeError:
             continue
-    raise ValueError(f"无法解码文件: {path}")
+    raise ValueError(f"Unable to decode CSV: {path}")
 
-# ========================= 2. Data Loading and Cleaning =========================
 
-# ① species table
-df_species = load_csv('data/Species.csv')
-df_species['name'] = df_species['name'].str.strip().replace('Floria', 'Florida')
-df_species_clean = df_species[['name', 'Grand Total']].rename(columns={'name': 'State', 'Grand Total': 'Species_Count'})
+def clean_state_names(frame, column="State"):
+    cleaned = frame.copy()
+    cleaned[column] = (
+        cleaned[column]
+        .astype("string")
+        .str.replace("\u200b", "", regex=False)
+        .str.replace("\xa0", " ", regex=False)
+        .str.strip()
+        .replace({"Floria": "Florida"})
+    )
+    return cleaned
 
-# ② Population
-df_pop = load_csv('data/US States Ranked by Population 2024.csv')
-df_pop_clean = df_pop[['US State', 'Population 2024']].rename(columns={'US State': 'State', 'Population 2024': 'Pop_2024'})
 
-# ③ GDP  (use 'pd.read_excel' to read .xlsx)
-try:
-    df_gdp = pd.read_excel('data/GDP_by_state_2024.xlsx', skiprows=3)
-except:
-    df_gdp = load_csv('data/GDP_by_state_2024.csv', skiprows=3)
+def require_one_record_per_state(frame, source_name):
+    frame = clean_state_names(frame)
+    duplicates = frame.loc[frame["State"].duplicated(), "State"].dropna().tolist()
+    if duplicates:
+        raise ValueError(f"{source_name} has duplicate states: {duplicates}")
+    missing = sorted(set(STATES) - set(frame["State"].dropna()))
+    if missing:
+        raise ValueError(f"{source_name} is missing required states: {missing}")
+    return frame[frame["State"].isin(STATES)].copy()
 
-df_gdp_clean = df_gdp.iloc[:, [0, 2]].copy() 
-df_gdp_clean.columns = ['State', 'GDP_2024_Millions']
-df_gdp_clean = df_gdp_clean[df_gdp_clean['State'].str.strip().isin(STATES_LIST)]
 
-print("="*50)
-print("【调试】GDP 清洗后的前 10 行：")
-print(df_gdp_clean.head(10))
+def load_gdp():
+    xlsx_path = DATA_DIR / "GDP_by_state_2024.xlsx"
+    csv_path = DATA_DIR / "GDP_by_state_2024.csv"
+    if xlsx_path.exists():
+        gdp = pd.read_excel(xlsx_path, skiprows=3)
+    elif csv_path.exists():
+        gdp = read_csv(csv_path, skiprows=3)
+    else:
+        raise FileNotFoundError("No 2024 GDP source file was found.")
 
-print("\n【调试】GDP 表中是否包含 'Florida'：", 'Florida' in df_gdp_clean['State'].values)
+    state_column = gdp.columns[0]
+    value_columns = [column for column in gdp.columns if str(column).strip().lower() in {"2024", "2024p"}]
+    if len(value_columns) != 1:
+        raise ValueError(f"Could not identify exactly one 2024 GDP column: {value_columns}")
 
-print("\n【调试】GDP 表中 'Florida' 的详细信息：")
-florida_gdp = df_gdp_clean[df_gdp_clean['State'].str.strip() == 'Florida']
-print(florida_gdp)
+    result = gdp[[state_column, value_columns[0]]].rename(
+        columns={state_column: "State", value_columns[0]: "GDP_2024_Millions"}
+    )
+    result["GDP_2024_Millions"] = pd.to_numeric(result["GDP_2024_Millions"], errors="coerce")
+    return require_one_record_per_state(result, "GDP source")
 
-print("\n【调试】GDP 表的形状（行, 列）：", df_gdp_clean.shape)
-print("="*50)
 
-# ④ NRI Risk index
-df_nri = load_csv('data/NRI_Table_States/NRI_Table_States.csv')
-nri_cols = {'STATE': 'State', 'EAL_SCORE': 'Risk_Overall', 'WFIR_EALR': 'Risk_Wildfire', 'DRGT_EALR': 'Risk_Drought', 'IFLD_EALR': 'Risk_Flooding'}
-df_nri_clean = df_nri[list(nri_cols.keys())].rename(columns=nri_cols)
-df_nri_clean['State'] = df_nri_clean['State'].str.strip()
+def main():
+    species = read_csv(DATA_DIR / "Species.csv")
+    category_columns = [
+        column for column in species.columns
+        if column not in {"name", "adm1_code", "Grand Total"}
+    ]
+    species = species.rename(columns={"name": "State", "Grand Total": "Species_Count"})
+    species = species[["State", *category_columns, "Species_Count"]]
+    for column in [*category_columns, "Species_Count"]:
+        species[column] = pd.to_numeric(species[column], errors="raise")
+    species = require_one_record_per_state(species, "Species source")
 
-# ========================= 3. Combine & Save =========================
+    population = read_csv(DATA_DIR / "US_State_Population_2024_Census.csv", dtype={"State_FIPS": "string"})
+    population = population[["State", "Pop_2024"]]
+    population["Pop_2024"] = pd.to_numeric(population["Pop_2024"], errors="raise")
+    population = require_one_record_per_state(population, "Census population source")
 
-# ========================= 3. Combine & Save =========================
+    gdp = load_gdp()
 
-# 定义清洗函数：去除所有不可见字符，只保留字母、数字、空格、点号
-def clean_state_column(df, col='State'):
-    df[col] = df[col].astype(str).str.strip()
-    # 移除除字母、数字、空格、点号以外的所有字符（包括 \xa0、零宽空格等）
-    df[col] = df[col].str.replace(r'[^\w\s.]', '', regex=True)
-    return df
+    nri = read_csv(DATA_DIR / "NRI_Table_States" / "NRI_Table_States.csv")
+    nri = nri[["STATE", "EAL_SCORE", "WFIR_EALR", "DRGT_EALR", "IFLD_EALR"]].rename(columns={
+        "STATE": "State", "EAL_SCORE": "Risk_Overall", "WFIR_EALR": "Risk_Wildfire",
+        "DRGT_EALR": "Risk_Drought", "IFLD_EALR": "Risk_Flooding",
+    })
+    nri["Risk_Overall"] = pd.to_numeric(nri["Risk_Overall"], errors="raise")
+    nri = require_one_record_per_state(nri, "FEMA NRI source")
 
-# 对四张表都执行清洗
-df_species_clean = clean_state_column(df_species_clean)
-df_pop_clean = clean_state_column(df_pop_clean)
-df_gdp_clean = clean_state_column(df_gdp_clean)
-df_nri_clean = clean_state_column(df_nri_clean)
+    merged = species.merge(population, on="State", how="left", validate="one_to_one")
+    merged = merged.merge(gdp, on="State", how="left", validate="one_to_one")
+    merged = merged.merge(nri, on="State", how="left", validate="one_to_one")
+    merged = merged.sort_values("State").reset_index(drop=True)
 
-# 验证清洗后的匹配情况（打印关键信息）
-print("【验证】物种表前5个州：", df_species_clean['State'].head().tolist())
-print("【验证】GDP表前5个州：", df_gdp_clean['State'].head().tolist())
-print("【验证】GDP表中是否包含 'Florida'：", 'Florida' in df_gdp_clean['State'].values)
+    if len(merged) != len(STATES) or merged.isna().any().any():
+        raise ValueError(f"Non-spatial merge is incomplete:\n{merged.isna().sum()}")
 
-# 合并（左连接，以物种表为主）
-df_merged = df_species_clean.merge(df_pop_clean, on='State', how='left')
-df_merged = df_merged.merge(df_gdp_clean, on='State', how='left')
-df_merged = df_merged.merge(df_nri_clean, on='State', how='left')
+    output_path = DATA_DIR / "merged_non_spatial.csv"
+    merged.to_csv(output_path, index=False)
+    print(f"Wrote {len(merged)} validated state records to {output_path}")
 
-# 只保留标准州列表（50州 + DC）
-df_merged = df_merged[df_merged['State'].isin(STATES_LIST)]
 
-# 保存
-output_path = 'data/merged_non_spatial.csv'
-df_merged.to_csv(output_path, index=False)
-
-print(f"\n Merge Done! Output saved to: {output_path}, shape:{df_merged.shape}")
-print("\n Florida examine:")
-print(df_merged[df_merged['State'] == 'Florida'])
-# %%
+if __name__ == "__main__":
+    main()

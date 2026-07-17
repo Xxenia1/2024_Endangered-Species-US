@@ -1,143 +1,179 @@
-//详情面板, i.e., info panel
-// panel.js - 详情面板与提示框
+// panel.js - state-level report rendered from the shared dashboard record
 
-// 更新右侧面板（显示该州的物种分组）
-function updatePanel(speciesInState, stateName) {
+function formatNumber(value, digits) {
+    if (value === null || value === undefined || String(value).trim() === "") {
+        return "—";
+    }
+
+    var number = Number(value);
+    if (!Number.isFinite(number)) {
+        return "—";
+    }
+
+    return number.toLocaleString(undefined, {
+        minimumFractionDigits: digits || 0,
+        maximumFractionDigits: digits || 0
+    });
+}
+
+function formatPercent(value) {
+    var formattedValue = formatNumber(value, 1);
+    return formattedValue === "—" ? formattedValue : formattedValue + "%";
+}
+
+function formatCurrency(value) {
+    var formattedValue = formatNumber(value);
+    return formattedValue === "—" ? formattedValue : "$" + formattedValue;
+}
+
+function reportMetric(container, label, value, note) {
+    var metric = container.append("div").attr("class", "report-metric");
+    metric.append("span").attr("class", "report-metric-label").text(label);
+    metric.append("strong").text(value);
+
+    if (note) {
+        metric.append("small").text(note);
+    }
+}
+
+function reportSection(panel, title) {
+    var section = panel.append("section").attr("class", "report-section");
+    section.append("h4").text(title);
+    return section.append("div").attr("class", "report-grid");
+}
+
+function reportProgressCard(container, label, value, note) {
+    var numericValue = Number(value);
+    var hasValue = Number.isFinite(numericValue);
+    var boundedValue = hasValue ? Math.max(0, Math.min(100, numericValue)) : 0;
+    var card = container.append("div").attr("class", "conservation-card");
+
+    card.append("span")
+        .attr("class", "report-metric-label")
+        .text(label);
+    card.append("strong")
+        .attr("class", "conservation-value")
+        .text(hasValue ? formatPercent(numericValue) : "—");
+
+    var progress = card.append("div")
+        .attr("class", "conservation-progress")
+        .attr("role", "progressbar")
+        .attr("aria-label", label)
+        .attr("aria-valuemin", 0)
+        .attr("aria-valuemax", 100)
+        .attr("aria-valuenow", hasValue ? boundedValue : 0);
+    progress.append("div")
+        .attr("class", "conservation-progress-fill")
+        .style("width", boundedValue + "%");
+
+    if (note) {
+        card.append("small").text(note);
+    }
+}
+
+function reportIndicatorCard(container, label, value, note) {
+    var card = container.append("div").attr("class", "indicator-card");
+    card.append("span").attr("class", "report-metric-label").text(label);
+    card.append("strong")
+        .attr("class", "indicator-value")
+        .text(formatNumber(value, 2));
+    if (note) {
+        card.append("small").text(note);
+    }
+}
+
+function updatePanel(state) {
     var panel = d3.select("#right-panel");
     panel.html("");
 
-    panel.append("h3").text("Species Groups in "+stateName);
+    panel.append("div").attr("class", "panel-kicker").text("Selected State");
+    panel.append("h2").text("State Report");
+    panel.append("p")
+        .attr("class", "report-state-name")
+        .text(state.State);
 
-    let groups = new Map();
+    var overview = panel.append("div").attr("class", "report-overview");
+    reportMetric(overview, "Species Count", formatNumber(state.Species_Count));
+    reportMetric(
+        overview,
+        "Species Density",
+        formatNumber(Number(state.Species_Density) * 100, 2),
+        "per 100 km²"
+    );
 
-    speciesInState.forEach(species => {
-        if (species.Group && species["Scientific Name"]) {
-            if (!groups.has(species.Group)) {
-                groups.set(species.Group, []);
-            }
-            groups.get(species.Group).push(species);
-        }
-    });
+    var habitat = reportSection(panel, "Habitat Composition");
+    reportMetric(habitat, "Forest", formatPercent(state.Forest_Pct));
+    reportMetric(habitat, "Urban", formatPercent(state.Urban_Pct));
+    reportMetric(habitat, "Crop", formatPercent(state.Crop_Pct));
+    reportMetric(habitat, "Wetland", formatPercent(state.Wetland_Pct));
 
-    if (groups.size > 0) {
-        groups.forEach((speciesList, group) => {
-            let groupContainer = panel.append("div").attr("class", "group-container");
-            let header = groupContainer.append("p")
-                .text(group)
-                .attr("class", "group-header")
-                .style("cursor", "pointer");
-            let list = groupContainer.append("ul")
-                .style("display", "none")
-                .attr("class", "species-list");
+    var human = reportSection(panel, "Human & Economy");
+    reportMetric(human, "Population", formatNumber(state.Pop_2024));
+    reportMetric(human, "GDP / Capita", formatCurrency(state.GDP_Per_Capita));
+    reportMetric(human, "Human Pressure", formatPercent(state.Human_Pressure), "0–100 composite score");
 
-            speciesList.forEach(species => {
-                list.append("li")
-                    .text(species["Scientific Name"])
-                    .attr("class", "species-name")
-                    .on("mouseover", function(event) {
-                        showTooltip(event, species);
-                    })
-                    .on("mouseout", function() {
-                        hideTooltip();
-                    });
-            });
+    var risk = reportSection(panel, "Environmental Risk (FEMA NRI)");
+    reportMetric(risk, "Expected Annual Loss Score", formatNumber(state.Risk_Overall, 1), "0–100 score, not probability");
+    reportMetric(risk, "Wildfire", state.Risk_Wildfire || "—");
+    reportMetric(risk, "Drought", state.Risk_Drought || "—");
+    reportMetric(risk, "Flooding", state.Risk_Flooding || "—");
 
-            header.on("click", function() {
-                let isVisible = list.style("display") === "none";
-                list.style("display", isVisible ? "block" : "none");
-            });
-        });
-    } else {
-        panel.append("p").text("No groups available for this state.");
-    }
+    // These values are properties of the selected feature from final_data.geojson.
+    var conservation = reportSection(panel, "Conservation");
+    reportProgressCard(
+        conservation,
+        "Protected Area",
+        state.Protected_Pct,
+        "Share of state area"
+    );
+    reportProgressCard(
+        conservation,
+        "Conservation Effectiveness",
+        state.Conservation_Effectiveness,
+        "Protected-coverage score"
+    );
+
+    var composite = reportSection(panel, "Composite Indicators");
+    reportIndicatorCard(
+        composite,
+        "Biodiversity Risk",
+        state.Biodiversity_Risk,
+        "0–100 composite score"
+    );
+    reportIndicatorCard(
+        composite,
+        "Ecological Vulnerability",
+        state.Ecological_Vulnerability,
+        "0–100 composite score"
+    );
+
+    var findings = panel.append("section").attr("class", "key-findings");
+    findings.append("h4").text("Key Findings");
+    var list = findings.append("ul");
+    list.append("li").text(
+        formatNumber(Number(state.Species_Density) * 100, 2) +
+        " endangered species per 100 km²."
+    );
+    list.append("li").text(
+        "FEMA NRI expected annual loss score: " +
+        formatNumber(state.Risk_Overall, 1) + "."
+    );
+    list.append("li").text(
+        "Protected area coverage: " + formatPercent(state.Protected_Pct) + "."
+    );
 }
 
-// 显示 tooltip（鼠标悬停物种名时）
-function showTooltip(event, species) {
-    let tooltip = d3.select("#tooltip");
-
-    tooltip.html(`<strong>Scientific Name:</strong> ${species["Scientific Name"]}<br>
-                  <strong>Common Name:</strong> ${species["Common Name"]}<br>
-                  <strong>Where Listed:</strong> ${species["Where Listed"]}<br>
-                  <strong>ESA Listing Status:</strong> ${species["ESA Listing Status "]}`)
-           .style("visibility", "visible")
-           .style("opacity", 0);
-
-    setTimeout(() => {
-        const tooltipWidth = tooltip.node().offsetWidth;
-        const viewportWidth = window.innerWidth;
-        const leftPosition = 0.8 * viewportWidth - tooltipWidth;
-        tooltip.style("left", `${leftPosition}px`)
-               .style("top", (event.pageY + 10) + "px")
-               .style("opacity", 1);
-    }, 10);
-}
-
-function hideTooltip() {
-    d3.select("#tooltip").style("visibility", "hidden");
-}
-
-// 添加页脚描述
 function addToolDescription() {
-    var descContainer = document.getElementById("toolDescriptionContainer");
-    if (descContainer) {
-        descContainer.innerHTML = '<p>This map designed by Zhiyi Li and Xun Gong</p>';
-        descContainer.classList.add("tool-description");
-    }
+    // The old footer is intentionally omitted to keep attention on analysis.
 }
 
-// 点击初始页面后隐藏它（HTML 中的 onclick 调用）
 function continueToMap() {
-    var initialPage = document.getElementById('initialPage');
+    var initialPage = document.getElementById("initialPage");
     if (initialPage) {
-        initialPage.style.display = 'none';
+        initialPage.style.display = "none";
     }
 }
 
-// 设置全局事件监听（重置按钮提示、下拉菜单提示）
 function setupEventListeners() {
-    var resetButton = document.getElementById('resetMap');
-    if (resetButton) {
-        resetButton.addEventListener('mouseover', function() {
-            var tooltip = document.getElementById('resetTooltip');
-            if (tooltip) tooltip.style.display = 'block';
-        });
-        resetButton.addEventListener('mouseout', function() {
-            var tooltip = document.getElementById('resetTooltip');
-            if (tooltip) tooltip.style.display = 'none';
-        });
-    }
-
-    var dropdown = document.querySelector('.dropdown-container select');
-    var tooltip = document.getElementById('dropdownTooltip');
-    if (dropdown && tooltip) {
-        dropdown.addEventListener('mouseover', function() {
-            tooltip.style.display = 'block';
-        });
-        dropdown.addEventListener('mouseout', function() {
-            tooltip.style.display = 'none';
-        });
-    }
-}
-
-// 工具函数：计算百分比（未在主干中使用，保留）
-function calculatePercentages(data) {
-    console.log("Sample data for verification:", data.slice(0, 1));
-    const grouped = d3.group(data, d => d.State, d => d.Group);
-    const percentages = [];
-    grouped.forEach((groups, state) => {
-        let total = 0;
-        groups.forEach((species, group) => {
-            total += species.length;
-        });
-        groups.forEach((species, group) => {
-            percentages.push({
-                State: state,
-                Group: group,
-                Percentage: (species.length / total) * 100
-            });
-        });
-    });
-    console.log("Computed Percentages:", percentages);
-    return percentages;
+    // Map controls and explorer interactions are registered by map.js.
 }

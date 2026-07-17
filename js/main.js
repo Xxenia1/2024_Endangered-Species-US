@@ -1,14 +1,45 @@
-//core controller
-// main.js - 核心控制模块（应用入口）
+// Core controller and application entry point.
+
+function setupThemeToggle() {
+    var button = document.getElementById("themeToggle");
+    if (!button) return;
+
+    var savedTheme = "";
+    try {
+        savedTheme = window.localStorage.getItem("dashboard-theme") || "";
+    } catch (error) {
+        savedTheme = "";
+    }
+
+    function applyTheme(isDark) {
+        document.body.classList.toggle("dark-mode", isDark);
+        button.setAttribute("aria-pressed", String(isDark));
+        button.querySelector(".theme-toggle-icon").textContent = isDark ? "☀" : "☾";
+        button.querySelector(".theme-toggle-label").textContent = isDark ? "Light mode" : "Dark mode";
+    }
+
+    applyTheme(savedTheme === "dark");
+    button.addEventListener("click", function() {
+        var isDark = !document.body.classList.contains("dark-mode");
+        applyTheme(isDark);
+        try {
+            window.localStorage.setItem("dashboard-theme", isDark ? "dark" : "light");
+        } catch (error) {
+            // The toggle still works when storage is unavailable.
+        }
+    });
+}
 
 window.onload = function() {
-    // 1. 启动地图模块（绘制地图、图表、下拉菜单）
+    setupThemeToggle();
+
+    // 1. Start the map module (map, chart, and explorer controls).
     setMap();
     
-    // 2. 添加页面底部的描述文字（来自 panel.js）
+    // 2. Add the optional page description from panel.js.
     addToolDescription();
     
-    // 3. 设置全局 UI 事件的监听器（重置按钮提示、下拉菜单提示等）
+    // 3. Register shared UI event listeners.
     setupEventListeners();
     
     console.log("Endangered Species Tracker initialized successfully.");

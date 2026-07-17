@@ -1,696 +1,472 @@
-// map.js - 地图与空间模块（定义地图绘制、投影、符号、下拉菜单切换等）
+// map.js - shared-state Bubble Map and spatial interactions
 
-// ---- 地图辅助函数 ----
-
-function setGraticule(map, path){
-    var graticule = d3.geoGraticule()
-        .step([10, 10]);
-    var gratBackground = map.append("path")
-        .datum(graticule.outline())
-        .attr("class", "gratBackground")
-        .attr("d", path);
-    var gratLines = map.selectAll(".gratLines")
-        .data(graticule.lines())
-        .enter()
-        .append("path")
-        .attr("class", "gratLines")
-        .attr("d", path);
+function getRecordCode(record) {
+    return "state-" + record.State_Code;
 }
 
-function joinData(usStates, csvData){
-    for (var i=0; i<csvData.length; i++){
-        var csvRegion = csvData[i];
-        var csvKey = csvRegion.adm1_code;
-        for (var a=0; a<usStates.length; a++){
-            var geojsonProps = usStates[a].properties;
-            var geojsonKey = geojsonProps.adm1_code;
-            if (geojsonKey == csvKey){
-                attrArray.forEach(function(attr){
-                    var val = parseFloat(csvRegion[attr]);
-                    geojsonProps[attr] = val;
-                });
-            }
-        }
+function formatBubbleValue(value, attribute) {
+    if (attribute === "Species_Density") {
+        return formatVisualValue(value, attribute);
     }
-    return usStates;
+    var number = Number(value);
+    return Number.isFinite(number) ? Math.round(number).toLocaleString() : "—";
 }
 
-// 绘制各州（点击时使用 csvSpecies 更新面板）
-function setEnumerationUnits(usStates, map, path, csvSpecies){
-    var state = map.selectAll(".regions")
-        .data(usStates)
-        .enter()
-        .append("path")
-        .attr("class", function(d){
-            return "regions " + d.properties.adm1_code;
-        })
-        .attr("d", path)        
-        .style("fill", "#D3D3D3")
-        .style("stroke", "#FFFFFF")
-        .style("stroke-width", "1px")
-        .on("click", function(event, d) {
-            var currentStateCode = d.properties.adm1_code;
-            var speciesInState = csvSpecies.filter(function(row) {
-                return row.adm1_code === currentStateCode;
-            });
-            var clickedStateName = d.properties.name;
-            updatePanel(speciesInState, clickedStateName);
-        })
-        .on("mouseover", function(event, d){
-            highlight(d.properties);
-        })
-        .on("mouseout", function(event, d){
-            dehighlight(d.properties);
-        })
-        .on("mousemove", moveLabel);
-    var desc = state.append("desc")
-        .text('{"stroke": "#FFF", "stroke-width": "0.5px"}');
-}
-
-function setProportionalSymbols(usStates, map, path, sizeScale){
-    usStates.forEach(function(d) {
-        d.properties.centroid = path.centroid(d);
-    });
-    var symbols = map.selectAll(".symbol")
-        .data(usStates)
-        .enter()
-        .append("circle")
-        .attr("class", "symbol")
-        .attr("cx", function(d) { return d.properties.centroid[0]; })
-        .attr("cy", function(d) { return d.properties.centroid[1]; })
-        .attr("r", function(d) {
-            var value = d.properties[expressed];
-            return value ? sizeScale(value) : 0;
-        })
-        .style("fill", "#008866")
-        .style("opacity", 0.6);
-}
-
-// ---- 高亮与标签 ----
-
-function highlight(props){
-    var selected = d3.selectAll("." + props.adm1_code)
-        .style("stroke", "black")
-        .style("stroke-width", "2");
-    setLabel(props)
-}
-
-function dehighlight(props) {
-    if (!props || !props.adm1_code) {
-        d3.select(".infolabel").remove();
-        return;
+function formatMapValue(value) {
+    var number = Number(value);
+    if (!Number.isFinite(number)) {
+        return isIndicatorVariable(expressed) ? formatVisualValue(value, expressed) : "—";
     }
+    return isIndicatorVariable(expressed)
+        ? formatVisualValue(number, expressed)
+        : formatBubbleValue(number);
+}
 
-    d3.selectAll("." + props.adm1_code)
-        .each(function() {
-            var element = d3.select(this);
-            var descNode = element.select("desc").node();
+function highlight(record) {
+    d3.selectAll("." + getRecordCode(record)).classed("is-highlighted", true);
+}
 
-            /*
-             * 主地图旧元素如果存在 desc，
-             * 就按照原来的样式记录恢复。
-             */
-            if (descNode && descNode.textContent) {
-                try {
-                    var styleObject = JSON.parse(descNode.textContent);
-
-                    if (styleObject.stroke !== undefined) {
-                        element.style("stroke", styleObject.stroke);
-                    }
-
-                    if (styleObject["stroke-width"] !== undefined) {
-                        element.style(
-                            "stroke-width",
-                            styleObject["stroke-width"]
-                        );
-                    }
-
-                    return;
-                } catch (error) {
-                    console.warn(
-                        "Could not restore stored element style:",
-                        error
-                    );
-                }
-            }
-
-            if (element.classed("inset-region")) {
-                element
-                    .style("stroke", "#ffffff")
-                    .style("stroke-width", "1px");
-            } else if (element.classed("inset-symbol")) {
-                element
-                    .style("stroke", "#ffffff")
-                    .style("stroke-width", "0.6px");
-            } else if (element.classed("regions")) {
-                element
-                    .style("stroke", "#ffffff")
-                    .style("stroke-width", "0.9px");
-            } else if (element.classed("symbol")) {
-                element
-                    .style("stroke", "none")
-                    .style("stroke-width", "0px");
-            }
-        });
-
+function dehighlight(record) {
+    if (record) {
+        d3.selectAll("." + getRecordCode(record)).classed("is-highlighted", false);
+    }
     d3.select(".infolabel").remove();
 }
 
-function setLabel(props){
-    var labelAttribute = "<h1>" + props[expressed] +
-        "</h1><b>" + expressed + "</b>";
-    var infolabel = d3.select("body")
-        .append("div")
+function setLabel(record) {
+    d3.select(".infolabel").remove();
+    var label = d3.select("body").append("div")
         .attr("class", "infolabel")
-        .attr("id", props.adm1_code + "_label")
-        .html(labelAttribute);
-    var regionName = infolabel.append("div")
-        .attr("class", "labelname")
-        .html(props.name);
-}
+        .attr("id", record.State_Code + "_label");
 
-function moveLabel(){
-    var labelWidth = d3.select(".infolabel")
-        .node()
-        .getBoundingClientRect()
-        .width;
-    var x1 = event.clientX + 10,
-        y1 = event.clientY - 75,
-        x2 = event.clientX - labelWidth - 10,
-        y2 = event.clientY + 25;
-    var x = event.clientX > window.innerWidth - labelWidth - 20 ? x2 : x1; 
-    var y = event.clientY < 75 ? y2 : y1; 
-    d3.select(".infolabel")
-        .style("left", x + "px")
-        .style("top", y + "px");
-}
-
-// ---- 下拉菜单与属性切换 ----
-
-function createDropdown(csvData){
-    var dropdown = d3.select(".dropdown-container")
-        .append("select")
-        .attr("class", "dropdown")
-        .on("change", function(){
-            changeAttribute(this.value, csvData)
-        });
-
-    var titleOption = dropdown.append("option")
-        .attr("class", "titleOption")
-        .attr("disabled", "true")
-        .text("Select Attribute");
-
-    var attrOptions = dropdown.selectAll("attrOptions")
-        .data(attrArray)
-        .enter()
-        .append("option")
-        .attr("value", function(d){ return d })
-        .text(function(d){ return d });
-}
-
-function changeAttribute(attribute, csvData) {
-    // 更新当前变量
-    expressed = attribute;
-
-    // 保存当前数据
-    currentCsvData = csvData;
-
-    // 重新生成比例尺
-    var colorScale = makeColorScale(csvData);
-    var sizeScale = getSizeScale(csvData);
-    var insetSizeScale = getInsetSizeScale(csvData);
-
-    // =========================
-    // 更新主地图气泡
-    // =========================
-
-    d3.selectAll(".symbol")
-        .transition()
-        .duration(700)
-        .attr("r", function(d) {
-            var value = Number(d.properties[expressed]);
-
-            if (!Number.isFinite(value) || value <= 0) {
-                return 0;
-            }
-
-            return sizeScale(value);
-        })
-        .style("fill", function(d) {
-            var value = Number(d.properties[expressed]);
-
-            if (!Number.isFinite(value)) {
-                return "#cccccc";
-            }
-
-            return colorScale(value);
-        });
-
-    // =========================
-    // 更新东北局部图气泡
-    // =========================
-
-    d3.selectAll(".inset-symbol")
-        .transition()
-        .duration(700)
-        .attr("r", function(d) {
-            var value = Number(d.properties[expressed]);
-
-            if (!Number.isFinite(value) || value <= 0) {
-                return 0;
-            }
-
-            return insetSizeScale(value);
-        })
-        .style("fill", function(d) {
-            var value = Number(d.properties[expressed]);
-
-            if (!Number.isFinite(value)) {
-                return "#cccccc";
-            }
-
-            return colorScale(value);
-        });
-
-    // =========================
-    // 更新地图图例标题
-    // =========================
-
-    var legendTitle = document.querySelector(
-        "#map-legend .legend-title"
+    label.append("strong").text(record.State);
+    label.append("span").text(
+        getDisplayName(expressed) + ": " + formatMapValue(record[expressed])
     );
-
-    if (legendTitle) {
-        legendTitle.textContent = getDisplayName(expressed);
-    }
-
-    // =========================
-    // 重新绘制完整51州图表
-    // =========================
-
-    setChart(csvData, colorScale);
-
-    // =========================
-    // 重新应用当前Top/Bottom筛选
-    // =========================
-
-    if (typeof updateMapFilter === "function") {
-        updateMapFilter(csvData);
-    }
-
-    if (typeof updateChartFilter === "function") {
-        updateChartFilter(csvData);
-    }
 }
 
-// ---- 主地图函数（由 main.js 调用） ----
+function moveLabel(event) {
+    var label = d3.select(".infolabel");
+    if (label.empty()) return;
 
-function setMap(){
-    var mapElement =
-        document.getElementById("map");
-
-    var width =
-        mapElement.clientWidth || 900;
-
-    var height =
-        mapElement.clientHeight || 620;
-
-    var map = d3.select("#map")
-        .append("svg")
-        .attr("class", "map")
-        .attr(
-            "viewBox",
-            `0 0 ${width} ${height}`
-        )
-        .attr(
-            "preserveAspectRatio",
-            "xMidYMid meet"
-        );
-    // 缩放
-    var zoom = d3.zoom()
-        .scaleExtent([1,3])
-        .on("zoom", function(event) {
-            map.selectAll("path, circle")
-                .attr("transform", event.transform);
-        });
-    map.call(zoom);
-
-    // 重置按钮
-    function resetMap() {
-        map.transition()
-            .duration(750)
-            .call(zoom.transform, d3.zoomIdentity);
+    var labelWidth = label.node().getBoundingClientRect().width;
+    var x = event.clientX + 14;
+    if (x + labelWidth > window.innerWidth - 12) {
+        x = event.clientX - labelWidth - 14;
     }
-    document.getElementById('resetMap').addEventListener('click', resetMap);
 
-    // 搜索框
+    label.style("left", x + "px").style("top", (event.clientY + 14) + "px");
+}
+
+function addMapPointerEvents(selection) {
+    selection
+        .on("click", function(event, feature) {
+            updatePanel(feature.properties || feature);
+        })
+        .on("mouseover", function(event, feature) {
+            var record = feature.properties || feature;
+            highlight(record);
+            setLabel(record);
+        })
+        .on("mouseout", function(event, feature) {
+            dehighlight(feature.properties || feature);
+        })
+        .on("mousemove", function(event) {
+            moveLabel(event);
+        });
+}
+
+function calculateBubblePositions(features, path, sizeScale) {
+    var nodes = features.map(function(feature) {
+        var centroid = path.centroid(feature);
+        var value = getIndicatorNumericValue(feature.properties[expressed], expressed) || 0;
+        return {
+            feature: feature,
+            baseX: centroid[0],
+            baseY: centroid[1],
+            x: centroid[0],
+            y: centroid[1],
+            radius: value > 0 ? sizeScale(value) : 0
+        };
+    });
+
+    d3.forceSimulation(nodes)
+        .force("x", d3.forceX(function(d) { return d.baseX; }).strength(0.48))
+        .force("y", d3.forceY(function(d) { return d.baseY; }).strength(0.48))
+        .force("collide", d3.forceCollide(function(d) {
+            return d.radius + 2;
+        }).iterations(4))
+        .stop()
+        .tick(120);
+
+    nodes.forEach(function(node) {
+        node.feature.properties._bubbleX = node.x;
+        node.feature.properties._bubbleY = node.y;
+        node.feature.properties._bubbleRadius = node.radius;
+    });
+}
+
+function updateMapLegend(data, sizeScale, colorScale) {
+    updateVariablePresentation();
+    var legend = d3.select("#map-legend");
+
+    legend.selectAll("*").remove();
+    legend.append("div").attr("class", "legend-title").text(getDisplayName(expressed));
+
+    if (isChoroplethMode()) {
+        legend.append("div").attr("class", "legend-section-title")
+            .text("Color = " + getIndicatorUnit(expressed));
+
+        var classification = getIndicatorClassification(data);
+        if (classification) {
+            legend.append("div").attr("class", "legend-method")
+                .text("Natural Breaks (Jenks)");
+            var classList = legend.append("div").attr("class", "legend-color-classes");
+            classification.colors.forEach(function(color, index) {
+                var row = classList.append("div").attr("class", "legend-color-class");
+                row.append("span").attr("class", "legend-color-class-swatch")
+                    .style("background-color", color);
+                var lower = formatVisualValue(classification.breaks[index], expressed);
+                var upper = formatVisualValue(classification.breaks[index + 1], expressed);
+                row.append("span").text(
+                    index === classification.colors.length - 1
+                        ? "≥ " + lower
+                        : lower + " – " + upper
+                );
+            });
+            return;
+        }
+
+        var domain = getIndicatorDomain(data);
+        var colorLegend = legend.append("div").attr("class", "legend-color-scale");
+        colorLegend.append("div").attr("class", "legend-color-gradient")
+            .style("background", "linear-gradient(90deg, #cfe8c6, #238b45)");
+        var colorLabels = colorLegend.append("div").attr("class", "legend-color-labels");
+        colorLabels.append("span").text(formatIndicatorLegendValue(domain[0], expressed));
+        colorLabels.append("span").text(formatIndicatorLegendValue(domain[1], expressed));
+        return;
+    }
+
+    var maxValue = d3.max(data, function(d) {
+        return getIndicatorNumericValue(d[expressed], expressed) || 0;
+    }) || 0;
+    var samples = [0.25, 0.6, 1].map(function(fraction) {
+        return maxValue * fraction;
+    });
+
+    legend.append("div").attr("class", "legend-section-title")
+        .text("Bubble size = selected species variable");
+
+    var list = legend.append("div").attr("class", "legend-size-scale");
+    samples.forEach(function(value) {
+        var row = list.append("div").attr("class", "legend-size-item");
+        row.append("span").attr("class", "legend-size-swatch")
+            .append("span").attr("class", "legend-size-circle")
+            .style("width", Math.max(8, sizeScale(value) * 0.72) + "px")
+            .style("height", Math.max(8, sizeScale(value) * 0.72) + "px")
+            .style("background-color", "#0da982");
+        row.append("span").text(formatBubbleValue(value, expressed));
+    });
+}
+
+function applyIndicatorColors(selection, colorScale) {
+    selection.style("fill", function(d) {
+        var record = d.properties || d;
+        var value = getIndicatorNumericValue(record[expressed], expressed);
+        return Number.isFinite(value) ? colorScale(value) : "#e5ebe7";
+    });
+}
+
+function resetRegionColors(selection) {
+    selection.style("fill", null);
+}
+
+function renderMainBubbles(features, mapLayer, path, sizeScale) {
+    calculateBubblePositions(features, path, sizeScale);
+
+    var symbols = mapLayer.selectAll(".symbol")
+        .data(features, function(d) { return d.properties.State; });
+    symbols.exit().remove();
+
+    var entered = symbols.enter().append("circle")
+        .attr("class", function(d) {
+            return "symbol state-mark " + getRecordCode(d.properties);
+        })
+        .style("fill", "#0da982")
+        .style("fill-opacity", 0.72);
+    addMapPointerEvents(entered);
+
+    entered.merge(symbols)
+        .attr("cx", function(d) { return d.properties._bubbleX; })
+        .attr("cy", function(d) { return d.properties._bubbleY; })
+        .attr("r", function(d) { return d.properties._bubbleRadius; });
+}
+
+function createDropdown(data, onChange) {
+    var container = d3.select(".dropdown-container");
+    container.selectAll("select").remove();
+
+    var dropdown = container.append("select")
+        .attr("class", "dropdown")
+        .attr("aria-label", "Display variable")
+        .on("change", function() {
+            expressed = this.value;
+            onChange();
+        });
+
+    dropdown.selectAll("option").data(getVariablesForMode(analysisMode)).enter().append("option")
+        .attr("value", function(d) { return d; })
+        .property("selected", function(d) { return d === expressed; })
+        .text(function(d) { return getDisplayName(d); });
+
+    var help = document.getElementById("variableHelp");
+    if (help) help.textContent = getModeHelp(analysisMode);
+    updateVariablePresentation();
+}
+
+function updateVariablePresentation() {
+    var title = getDisplayName(expressed);
+    var isChoropleth = isChoroplethMode();
+    var heading = document.getElementById("mapHeading");
+    var subheading = document.getElementById("mapSubheading");
+    var info = document.getElementById("variableInfoText");
+    var topStatesVariable = document.getElementById("topStatesVariable");
+
+    if (heading) heading.textContent = title;
+    if (subheading) {
+        subheading.textContent = isChoropleth
+            ? "Color intensity represents the selected indicator value."
+            : "Bubble size represents the selected species variable.";
+    }
+    if (info) {
+        info.textContent = isChoropleth
+            ? "Darker color indicates a higher indicator value."
+            : "Each circle represents the selected species variable.";
+    }
+    if (topStatesVariable) topStatesVariable.textContent = title;
+}
+
+function createAnalysisModeControl(data, onChange) {
+    var selector = document.getElementById("analysisMode");
+    if (!selector) return;
+
+    function setMode(mode) {
+        if (!analysisModes[mode]) return;
+        analysisMode = mode;
+        selector.value = mode;
+        expressed = getVariablesForMode(analysisMode)[0];
+        d3.selectAll(".mode-option").classed("is-active", function() {
+            return this.getAttribute("data-analysis-mode") === mode;
+        });
+        createDropdown(data, onChange);
+        onChange();
+    }
+
+    selector.value = analysisMode;
+    selector.addEventListener("change", function() {
+        setMode(this.value);
+    });
+
+    d3.selectAll("[data-analysis-mode]").on("click", function() {
+        setMode(this.getAttribute("data-analysis-mode"));
+    });
+    d3.selectAll(".mode-option").classed("is-active", function() {
+        return this.getAttribute("data-analysis-mode") === analysisMode;
+    });
+}
+
+function createRankingScopeFilter(data) {
+    var selector = document.getElementById("rankingScope");
+    selector.onchange = function() {
+        rankingScope = this.value;
+        updateMapFilter(data);
+        updateChartFilter(data);
+    };
+}
+
+function updateMapFilter(data) {
+    var activeCodes = getFilteredCodes(data);
+    var scopeActive = rankingScope !== "all";
+
+    d3.selectAll(".state-mark, .regions").classed("filter-active", function(d) {
+        var record = d.properties || d;
+        return scopeActive && activeCodes.has(record.State_Code);
+    }).classed("filter-muted", function(d) {
+        var record = d.properties || d;
+        return scopeActive && !activeCodes.has(record.State_Code);
+    });
+}
+
+function normalizeStateQuery(value) {
+    return value.trim().toLowerCase().replace(/\./g, "").replace(/\s+/g, " ");
+}
+
+function setMap() {
+    var mapElement = document.getElementById("map");
+    var width = mapElement.clientWidth || 900;
+    var height = mapElement.clientHeight || 620;
+    var svg = d3.select("#map").append("svg").attr("class", "map")
+        .attr("viewBox", "0 0 " + width + " " + height)
+        .attr("preserveAspectRatio", "xMidYMid meet");
+    var mapLayer = svg.append("g").attr("class", "map-layer");
+
+    // Keep the fitted map as the reset view, while allowing three zoom-out steps.
+    var zoom = d3.zoom().scaleExtent([0.4, 4]).on("zoom", function(event) {
+        mapLayer.attr("transform", event.transform);
+    });
+    svg.call(zoom);
+
+    function resetMap() {
+        svg.transition().duration(500).call(zoom.transform, d3.zoomIdentity);
+    }
+    function zoomBy(factor) {
+        svg.transition().duration(250).call(zoom.scaleBy, factor);
+    }
+    document.getElementById("resetMap").addEventListener("click", resetMap);
+    var fitUsButton = document.getElementById("fitUs");
+    if (fitUsButton) fitUsButton.addEventListener("click", resetMap);
+    document.getElementById("zoomIn").addEventListener("click", function() { zoomBy(1.45); });
+    document.getElementById("zoomOut").addEventListener("click", function() { zoomBy(1 / 1.45); });
+
     var searchContainer = document.querySelector(".search-container");
     var stateSearch = document.createElement("input");
-    stateSearch.setAttribute("type", "text");
-    stateSearch.setAttribute("id", "stateSearch");
-    stateSearch.setAttribute("placeholder", "Search for a state");
+    stateSearch.type = "text";
+    stateSearch.id = "stateSearch";
+    stateSearch.placeholder = "Search any state or abbreviation (e.g., WV)";
     searchContainer.appendChild(stateSearch);
-
     var searchButton = document.createElement("button");
-    searchButton.innerHTML = "Search";
-    searchButton.setAttribute("id", "searchButton");
+    searchButton.id = "searchButton";
+    searchButton.textContent = "Search";
     searchContainer.appendChild(searchButton);
 
-    // 投影与路径
-    var projection = d3.geoAlbers()
-    .center([3.64, 41])
-    .rotate([102, 0, 0])
-    .parallels([40, 75])
-    .scale(width * 1.08)
-    .translate([
-        width / 2,
-        height * 0.43
-    ]);
+    Promise.all([
+        d3.json("data/final_data.geojson"),
+        d3.csv("data/research_dataset.csv")
+    ]).then(function(data) {
+        var geojson = data[0];
+        var researchByState = new Map(data[1].map(function(row) {
+            return [row.State, row];
+        }));
+        var categoryData = geojson.species_categories || {};
 
-    var path = d3.geoPath()
-        .projection(projection);
+        currentStateFeatures = geojson.features.map(function(feature) {
+            var stateName = feature.properties.State;
+            var record = Object.assign(
+                {},
+                feature.properties,
+                researchByState.get(stateName) || {},
+                categoryData[stateName] || {}
+            );
+            record.State = stateName;
+            record.State_Code = getStateCode(stateName);
+            feature.properties = record;
+            return feature;
+        });
+        currentStateData = currentStateFeatures.map(function(feature) {
+            return feature.properties;
+        });
 
-    // 加载数据
-    var promises = [];    
-    promises.push(d3.csv("data/Species.csv"));
-    promises.push(d3.json("data/countries.topojson"));
-    promises.push(d3.json("data/states.topojson"));
-    promises.push(d3.csv("data/species_az.csv"));
-    Promise.all(promises).then(callback);
+        var unmatched = currentStateData.filter(function(record) {
+            return !researchByState.has(record.State);
+        });
+        if (unmatched.length) {
+            console.warn("State records missing from research_dataset.csv:", unmatched);
+        }
 
-    function callback(data){    
-        var csvData = data[0];    
-        var countries = data[1];   
-        var states = data[2]; 
-        var csvSpecies = data[3];
+        var stateCollection = {
+            type: "FeatureCollection",
+            features: currentStateFeatures
+        };
+        var projection = d3.geoAlbersUsa().fitExtent(
+            [[18, 26], [width - 18, height - 20]],
+            stateCollection
+        );
+        var path = d3.geoPath().projection(projection);
 
-        setGraticule(map, path);
-
-        var worldCountries = topojson.feature(countries, countries.objects.world_administrative_boundaries),
-            usStates = topojson.feature(states, states.objects.ne_110m_admin_1_states_provinces).features;
-
-        usStates = joinData(usStates, csvData);
-
-        // 绘制背景国家
-        map.append("path")
-            .datum(worldCountries)
-            .attr("class", "countries")
+        var regions = mapLayer.selectAll(".regions").data(currentStateFeatures).enter()
+            .append("path")
+            .attr("class", function(d) {
+                return "regions " + getRecordCode(d.properties);
+            })
             .attr("d", path);
+        addMapPointerEvents(regions);
 
-        // 颜色与符号比例尺
-        var colorScale = makeColorScale(csvData);
-        var sizeScale = getSizeScale(csvData);
+        function renderDashboard() {
+            var sizeScale = getSizeScale(currentStateData);
+            var indicatorMode = isChoroplethMode();
+            var colorScale = getVisualizationColorScale(currentStateData);
 
-        // 绘制各州（传入 csvSpecies 用于点击面板）
-        setEnumerationUnits(usStates, map, path, csvSpecies);
-        
-        // 绘制比例符号
-        setProportionalSymbols(usStates, map, path, sizeScale);
-        setNortheastInset(
-            usStates,
-            csvSpecies
-        );
-
-        createRankingScopeFilter(
-            csvData
-        );
-
-        // 绘制图表
-        setChart(csvData, colorScale);
-
-        // 创建下拉菜单
-        createDropdown(csvData);
-
-        // 搜索按钮事件
-        searchButton.addEventListener("click", function() {
-            var stateName = document.getElementById('stateSearch').value;
-            var state = usStates.find(function(d) {
-                return d.properties.name.toLowerCase() === stateName.toLowerCase();
-            });
-            if (state) {
-                var bounds = path.bounds(state),
-                    dx = bounds[1][0] - bounds[0][0],
-                    dy = bounds[1][1] - bounds[0][1],
-                    x = (bounds[0][0] + bounds[1][0]) / 2,
-                    y = (bounds[0][1] + bounds[1][1]) / 2,
-                    scale = 2,
-                    translate = [width / 2 - scale * x, height / 2 - scale * y];
-                map.transition()
-                    .duration(750)
-                    .call(zoom.transform, d3.zoomIdentity.translate(translate[0], translate[1]).scale(scale));
+            mapLayer.selectAll(".symbol").remove();
+            if (indicatorMode) {
+                applyIndicatorColors(mapLayer.selectAll(".regions"), colorScale);
             } else {
-                alert("State not found.");
+                resetRegionColors(mapLayer.selectAll(".regions"));
+                renderMainBubbles(currentStateFeatures, mapLayer, path, sizeScale);
             }
-        });
-    }
-}
-
-function createRankingScopeFilter(csvData) {
-    var selector =
-        document.getElementById("rankingScope");
-
-    if (!selector) {
-        return;
-    }
-
-    selector.addEventListener(
-        "change",
-        function() {
-            rankingScope = this.value;
-
-            updateMapFilter(csvData);
-            updateChartFilter(csvData);
-        }
-    );
-}
-
-function updateMapFilter(csvData) {
-    var activeCodes =
-        getFilteredCodes(csvData);
-
-    var scopeActive =
-        rankingScope !== "all";
-
-    d3.selectAll(".symbol")
-        .classed(
-            "filter-active",
-            function(d) {
-                return !scopeActive ||
-                    activeCodes.has(
-                        d.properties.adm1_code
-                    );
-            }
-        )
-        .classed(
-            "filter-muted",
-            function(d) {
-                return scopeActive &&
-                    !activeCodes.has(
-                        d.properties.adm1_code
-                    );
-            }
-        );
-
-    d3.selectAll(".regions")
-        .style(
-            "opacity",
-            function(d) {
-                if (!scopeActive) {
-                    return 1;
-                }
-
-                return activeCodes.has(
-                    d.properties.adm1_code
-                )
-                    ? 1
-                    : 0.35;
-            }
-        );
-
-    d3.selectAll(".inset-symbol")
-        .classed(
-            "filter-active",
-            function(d) {
-                return !scopeActive ||
-                    activeCodes.has(
-                        d.properties.adm1_code
-                    );
-            }
-        )
-        .classed(
-            "filter-muted",
-            function(d) {
-                return scopeActive &&
-                    !activeCodes.has(
-                        d.properties.adm1_code
-                    );
-            }
-        );
-}
-
-/* 东北部和DC局部放大图 */
-function setNortheastInset(
-    usStates,
-    csvSpecies
-) {
-    var insetContainer =
-        document.getElementById(
-            "northeast-map"
-        );
-
-    if (!insetContainer) {
-        return;
-    }
-
-    d3.select("#northeast-map")
-        .selectAll("*")
-        .remove();
-
-    var insetWidth =
-        insetContainer.clientWidth || 220;
-
-    var insetHeight =
-        insetContainer.clientHeight || 175;
-
-    var northeastNames = new Set([
-        "District of Columbia",
-        "Maryland",
-        "Delaware",
-        "Virginia",
-        "West Virginia",
-        "Pennsylvania",
-        "New Jersey",
-        "New York",
-        "Connecticut",
-        "Rhode Island",
-        "Massachusetts"
-    ]);
-
-    var northeastStates =
-        usStates.filter(function(d) {
-            return northeastNames.has(
-                d.properties.name
-            );
-        });
-
-    if (!northeastStates.length) {
-        return;
-    }
-
-    var northeastCollection = {
-        type: "FeatureCollection",
-        features: northeastStates
-    };
-
-    var insetProjection =
-        d3.geoMercator()
-            .fitExtent(
-                [
-                    [8, 8],
-                    [
-                        insetWidth - 8,
-                        insetHeight - 8
-                    ]
-                ],
-                northeastCollection
-            );
-
-    var insetPath =
-        d3.geoPath()
-            .projection(insetProjection);
-
-    var insetSvg =
-        d3.select("#northeast-map")
-            .append("svg")
-            .attr(
-                "viewBox",
-                `0 0 ${insetWidth} ${insetHeight}`
-            );
-
-    insetSvg.selectAll(".inset-region")
-        .data(northeastStates)
-        .enter()
-        .append("path")
-        .attr(
-            "class",
-            function(d) {
-                return (
-                    "inset-region " +
-                    d.properties.adm1_code
-                );
-            }
-        )
-        .attr("d", insetPath)
-        .on("mouseover", function(event, d) {
-            highlight(d.properties);
-        })
-        .on("mouseout", function(event, d) {
-            dehighlight(d.properties);
-        })
-        .on("click", function(event, d) {
-            var currentStateCode =
-                d.properties.adm1_code;
-
-            var speciesInState =
-                csvSpecies.filter(
-                    function(row) {
-                        return (
-                            row.adm1_code ===
-                            currentStateCode
-                        );
-                    }
-                );
-
-            updatePanel(
-                speciesInState,
-                d.properties.name
-            );
-        });
-
-    var insetSizeScale =
-        getInsetSizeScale(currentCsvData);
-
-    var insetSizeScale = getInsetSizeScale(currentCsvData);
-
-var insetSymbols = insetSvg
-    .selectAll(".inset-symbol")
-    .data(northeastStates)
-    .enter()
-    .append("circle")
-    .attr("class", function(d) {
-        return "inset-symbol " + d.properties.adm1_code;
-    })
-    .attr("cx", function(d) {
-        return insetPath.centroid(d)[0];
-    })
-    .attr("cy", function(d) {
-        return insetPath.centroid(d)[1];
-    })
-    .attr("r", function(d) {
-        var value = Number(d.properties[expressed]);
-
-        if (!Number.isFinite(value) || value <= 0) {
-            return 0;
+            updateMapLegend(currentStateData, sizeScale, colorScale);
+            setChart(currentStateData);
+            updateMapFilter(currentStateData);
         }
 
-        return insetSizeScale(value);
-    })
-    .style("fill", "#0da982")
-    .style("fill-opacity", 0.72)
-    .style("stroke", "#ffffff")
-    .style("stroke-width", "0.6px")
-    .on("mouseover", function(event, d) {
-        highlight(d.properties);
-    })
-    .on("mouseout", function(event, d) {
-        dehighlight(d.properties);
-    })
-    .on("mousemove", moveLabel);
+        createAnalysisModeControl(currentStateData, renderDashboard);
+        createDropdown(currentStateData, renderDashboard);
+        createRankingScopeFilter(currentStateData);
+        renderDashboard();
 
-/*
- * 保存局部图气泡的默认样式，
- * 让 dehighlight() 可以安全恢复。
- */
-insetSymbols.append("desc")
-    .text('{"stroke":"#ffffff","stroke-width":"0.6px"}');
+        var stateSuggestions = document.createElement("datalist");
+        stateSuggestions.id = "stateSuggestions";
+        searchContainer.appendChild(stateSuggestions);
+        stateSearch.setAttribute("list", stateSuggestions.id);
+
+        var stateIndex = new Map();
+        currentStateFeatures.forEach(function(feature) {
+            var record = feature.properties;
+            var fullNameOption = document.createElement("option");
+            fullNameOption.value = record.State;
+            fullNameOption.label = record.State_Code;
+            stateSuggestions.appendChild(fullNameOption);
+
+            var abbreviationOption = document.createElement("option");
+            abbreviationOption.value = record.State_Code;
+            abbreviationOption.label = record.State;
+            stateSuggestions.appendChild(abbreviationOption);
+
+            stateIndex.set(normalizeStateQuery(record.State), feature);
+            stateIndex.set(normalizeStateQuery(record.State_Code), feature);
+        });
+
+        ["washington dc", "washington d c", "district columbia"].forEach(function(alias) {
+            stateIndex.set(alias, stateIndex.get("district of columbia"));
+        });
+
+        function searchForState() {
+            var query = normalizeStateQuery(stateSearch.value);
+            var feature = stateIndex.get(query);
+            if (!feature) {
+                alert("State not found. Use any full state name or postal abbreviation, such as WV or AK.");
+                return;
+            }
+
+            updatePanel(feature.properties);
+            var bounds = path.bounds(feature);
+            var x = (bounds[0][0] + bounds[1][0]) / 2;
+            var y = (bounds[0][1] + bounds[1][1]) / 2;
+            var scale = 2.2;
+            svg.transition().duration(550).call(
+                zoom.transform,
+                d3.zoomIdentity
+                    .translate(width / 2 - scale * x, height / 2 - scale * y)
+                    .scale(scale)
+            );
+        }
+
+        searchButton.addEventListener("click", searchForState);
+        stateSearch.addEventListener("keydown", function(event) {
+            if (event.key === "Enter") searchForState();
+        });
+    }).catch(function(error) {
+        console.error("Dashboard data could not be loaded:", error);
+        d3.select("#map").append("p").attr("class", "data-error")
+            .text("The dashboard data could not be loaded.");
+    });
 }

@@ -1,52 +1,52 @@
-State,Species_Count,Pop_2024,GDP_2024_Millions,Risk_Overall,Risk_Wildfire,Risk_Drought,Risk_Flooding
-Alabama,144,5143033.0,321238.0,62.5,Relatively Low,Relatively Moderate,Relatively Moderate
-Alaska,8,733536.0,69969.0,28.57142857142857,Relatively Moderate,Very Low,Very Low
-Arizona,75,7497004.0,552167.0,83.92857142857143,Relatively High,Relatively Low,Relatively High
-Arkansas,36,3089060.0,188723.0,48.214285714285715,Relatively Low,Relatively Moderate,Relatively Moderate
-California,292,38889770.0,4103124.0,100.0,Very High,Very High,Very High
-Colorado,37,5914181.0,553323.0,55.35714285714286,Relatively High,Relatively Moderate,Relatively Moderate
-Connecticut,12,3625646.0,365723.0,37.5,Very Low,Very Low,Relatively Moderate
-Delaware,14,1044321.0,103253.0,16.071428571428573,Very Low,Relatively Low,Relatively Low
-District of Columbia,3,,186165.0,10.714285714285714,Very Low,No Expected Annual Losses,Relatively Low
-Florida,134,22975931.0,1705565.0,96.42857142857144,Relatively High,Relatively Low,Relatively High
-Georgia,76,11145304.0,882535.0,80.35714285714286,Relatively Low,Relatively Moderate,Relatively Moderate
-Hawaii,490,1430877.0,115627.0,35.714285714285715,Relatively Moderate,Very Low,Relatively Moderate
-Idaho,18,1990456.0,128132.0,23.214285714285715,Relatively High,Very Low,Relatively Low
-Illinois,33,12516863.0,1137244.0,94.64285714285714,Very Low,Relatively High,Relatively High
-Indiana,31,6892124.0,527381.0,60.714285714285715,Very Low,Relatively Moderate,Relatively Moderate
-Iowa,18,3214315.0,257021.0,51.785714285714285,Relatively Low,Relatively High,Relatively Moderate
-Kansas,18,2944376.0,234673.0,50.0,Relatively Moderate,Relatively High,Relatively Moderate
-Kentucky,52,4540745.0,293021.0,58.92857142857143,Relatively Low,Relatively Moderate,Relatively Moderate
-Louisiana,26,4559475.0,327782.0,82.14285714285714,Relatively Low,Relatively Moderate,Relatively Moderate
-Maine,12,1402106.0,98606.0,17.857142857142858,Very Low,Relatively Low,Relatively Low
-Maryland,26,6196525.0,542766.0,33.92857142857143,Very Low,Relatively Moderate,Relatively Low
-Massachusetts,18,7020058.0,780666.0,42.857142857142854,Very Low,Relatively Low,Relatively Moderate
-Michigan,26,10041241.0,706616.0,69.64285714285714,Very Low,Very Low,Relatively Moderate
-Minnesota,21,5761530.0,500851.0,66.07142857142857,Relatively Low,Relatively Moderate,Relatively Moderate
-Mississippi,51,2940452.0,157491.0,46.42857142857143,Relatively Low,Relatively Moderate,Relatively Low
-Missouri,42,6215144.0,451201.0,85.71428571428571,Relatively Low,Relatively Moderate,Relatively Moderate
-Montana,18,1142746.0,75999.0,25.0,Relatively Moderate,Very Low,Relatively Low
-Nebraska,14,1988698.0,185411.0,39.285714285714285,Relatively Low,Relatively High,Relatively Low
-Nevada,50,3210931.0,260728.0,41.07142857142857,Relatively High,Relatively Low,Relatively Low
-New Hampshire,12,1405105.0,121189.0,19.642857142857142,Very Low,Relatively Low,Relatively Low
-New Jersey,17,9320865.0,846587.0,78.57142857142857,Relatively Low,Relatively Low,Relatively High
-New Mexico,61,2115266.0,140542.0,30.357142857142858,Relatively High,Relatively Moderate,Relatively Moderate
-New York,27,19469232.0,2297028.0,89.28571428571429,Very Low,Relatively Low,Relatively High
-North Carolina,68,10975017.0,839122.0,91.07142857142857,Relatively Low,Relatively Moderate,Relatively High
-North Dakota,7,788940.0,75399.0,21.428571428571427,Relatively Low,Very Low,Relatively Low
-Ohio,28,11812173.0,927740.0,75.0,Very Low,Relatively Low,Relatively High
-Oklahoma,22,4088377.0,265779.0,57.14285714285714,Relatively Moderate,Relatively High,Relatively Moderate
-Oregon,47,4227337.0,331029.0,64.28571428571429,Relatively High,Very Low,Relatively Moderate
-Pennsylvania,20,12951275.0,1024206.0,87.5,Very Low,Relatively Moderate,Relatively High
-Rhode Island,9,1098082.0,82493.0,7.142857142857142,Very Low,Very Low,Relatively Low
-South Carolina,39,5464155.0,349965.0,71.42857142857143,Relatively Low,Relatively Low,Relatively Moderate
-South Dakota,15,928767.0,75179.0,26.785714285714285,Relatively Moderate,Relatively Moderate,Relatively Low
-Tennessee,131,7204002.0,549709.0,73.21428571428571,Very Low,Relatively Low,Relatively Moderate
-Texas,111,30976754.0,2709393.0,98.21428571428571,Relatively High,Very High,Relatively High
-Utah,46,3454232.0,300904.0,44.642857142857146,Relatively High,Relatively Low,Relatively Low
-Vermont,6,647818.0,45707.0,8.928571428571429,Very Low,No Expected Annual Losses,Relatively Low
-Virginia,77,8752297.0,764475.0,53.57142857142857,Relatively Low,Relatively High,Relatively Moderate
-Washington,32,7841283.0,854683.0,92.85714285714286,Relatively High,Very Low,Relatively Moderate
-West Virginia,32,1766107.0,107660.0,32.142857142857146,Very Low,Relatively Low,Relatively Moderate
-Wisconsin,25,5931367.0,451285.0,67.85714285714286,Very Low,Relatively Low,Relatively Moderate
-Wyoming,17,586485.0,52946.0,14.285714285714285,Relatively Low,Very Low,Relatively Low
+State,Amphibians,Arachnids,Birds,Clams,Conifers and Cycads,Crustaceans,Ferns and Allies,Fishes,Flowering Plants,Insects,Lichens,Mammals,Reptiles,Snails,Species_Count,Pop_2024,GDP_2024_Millions,Risk_Overall,Risk_Wildfire,Risk_Drought,Risk_Flooding
+Alabama,3,0,5,63,0,2,3,16,22,1,0,6,10,13,144,5157699,321238.0,62.5,Relatively Low,Relatively Moderate,Relatively Moderate
+Alaska,0,0,4,0,0,0,1,0,0,0,0,3,0,0,8,740133,69969.0,28.57142857142857,Relatively Moderate,Very Low,Very Low
+Arizona,2,0,9,0,0,0,0,20,26,0,0,10,6,2,75,7582384,552167.0,83.92857142857143,Relatively High,Relatively Low,Relatively High
+Arkansas,1,0,5,13,0,2,0,4,5,1,0,4,1,0,36,3088354,188723.0,48.214285714285715,Relatively Low,Relatively Moderate,Relatively Moderate
+California,15,0,16,0,3,8,0,19,172,25,0,24,9,1,292,39431263,4103124.0,100.0,Very High,Very High,Very High
+Colorado,0,0,7,0,0,0,0,5,17,3,0,5,0,0,37,5957493,553323.0,55.35714285714286,Relatively High,Relatively Moderate,Relatively Moderate
+Connecticut,0,0,3,1,0,0,0,0,2,1,0,2,3,0,12,3675069,365723.0,37.5,Very Low,Very Low,Relatively Moderate
+Delaware,0,0,3,1,0,0,0,0,5,0,0,2,3,0,14,1051917,103253.0,16.071428571428573,Very Low,Relatively Low,Relatively Low
+District of Columbia,0,0,0,1,0,1,0,0,0,0,0,1,0,0,3,702250,186165.0,10.714285714285714,Very Low,No Expected Annual Losses,Relatively Low
+Florida,2,0,13,15,1,2,1,1,64,5,1,17,11,1,134,23372215,1705565.0,96.42857142857144,Relatively High,Relatively Low,Relatively High
+Georgia,2,0,6,18,1,0,3,8,25,0,1,4,6,2,76,11180878,882535.0,80.35714285714286,Relatively Low,Relatively Moderate,Relatively Moderate
+Hawaii,0,1,24,0,0,3,23,0,402,28,0,1,4,4,490,1446146,115627.0,35.714285714285715,Relatively Moderate,Very Low,Relatively Moderate
+Idaho,0,0,2,0,1,0,0,2,4,0,0,5,0,4,18,2001619,128132.0,23.214285714285715,Relatively High,Very Low,Relatively Low
+Illinois,0,0,3,13,0,1,0,1,7,3,0,3,1,1,33,12710158,1137244.0,94.64285714285714,Very Low,Relatively High,Relatively High
+Indiana,0,0,4,13,0,0,0,0,6,3,0,3,2,0,31,6924275,527381.0,60.714285714285715,Very Low,Relatively Moderate,Relatively Moderate
+Iowa,0,0,3,3,0,0,0,2,5,1,0,2,1,1,18,3241488,257021.0,51.785714285714285,Relatively Low,Relatively High,Relatively Moderate
+Kansas,0,0,3,3,0,0,0,6,2,1,0,3,0,0,18,2970606,234673.0,50.0,Relatively Moderate,Relatively High,Relatively Moderate
+Kentucky,0,0,2,28,0,2,0,7,9,0,0,4,0,0,52,4588372,293021.0,58.92857142857143,Relatively Low,Relatively Moderate,Relatively Moderate
+Louisiana,0,0,7,5,0,0,1,2,2,0,0,2,7,0,26,4597740,327782.0,82.14285714285714,Relatively Low,Relatively Moderate,Relatively Moderate
+Maine,0,0,3,0,0,0,0,1,3,1,0,2,2,0,12,1405012,98606.0,17.857142857142858,Very Low,Relatively Low,Relatively Low
+Maryland,0,0,3,2,0,1,0,1,8,3,0,3,5,0,26,6263220,542766.0,33.92857142857143,Very Low,Relatively Moderate,Relatively Low
+Massachusetts,0,0,3,1,0,0,0,0,5,4,0,1,4,0,18,7136171,780666.0,42.857142857142854,Very Low,Relatively Low,Relatively Moderate
+Michigan,0,0,3,5,0,0,1,0,6,5,0,4,2,0,26,10140459,706616.0,69.64285714285714,Very Low,Very Low,Relatively Moderate
+Minnesota,0,0,3,5,0,0,0,1,5,3,0,3,1,0,21,5793151,500851.0,66.07142857142857,Relatively Low,Relatively Moderate,Relatively Moderate
+Mississippi,1,0,6,19,0,0,1,4,5,1,0,4,10,0,51,2943045,157491.0,46.42857142857143,Relatively Low,Relatively Moderate,Relatively Low
+Missouri,2,0,2,13,0,3,0,7,8,2,0,4,0,1,42,6245466,451201.0,85.71428571428571,Relatively Low,Relatively Moderate,Relatively Moderate
+Montana,0,0,4,0,1,0,0,3,2,2,0,6,0,0,18,1137233,75999.0,25.0,Relatively Moderate,Very Low,Relatively Low
+Nebraska,0,0,4,2,0,0,0,2,3,2,0,1,0,0,14,2005465,185411.0,39.285714285714285,Relatively Low,Relatively High,Relatively Low
+Nevada,2,0,4,0,1,0,0,25,11,3,0,2,1,1,50,3267467,260728.0,41.07142857142857,Relatively High,Relatively Low,Relatively Low
+New Hampshire,0,0,3,1,0,0,0,0,3,1,0,2,2,0,12,1409032,121189.0,19.642857142857142,Very Low,Relatively Low,Relatively Low
+New Jersey,0,0,3,1,0,0,0,0,6,1,0,3,3,0,17,9500851,846587.0,78.57142857142857,Relatively Low,Relatively Low,Relatively High
+New Mexico,2,0,6,1,0,2,1,15,16,2,0,7,3,6,61,2130256,140542.0,30.357142857142858,Relatively High,Relatively Moderate,Relatively Moderate
+New York,0,0,4,6,0,0,1,0,7,2,0,2,4,1,27,19867248,2297028.0,89.28571428571429,Very Low,Relatively Low,Relatively High
+North Carolina,1,1,7,9,0,0,0,5,26,1,1,8,7,2,68,11046024,839122.0,91.07142857142857,Relatively Low,Relatively Moderate,Relatively High
+North Dakota,0,0,3,0,0,0,0,1,1,1,0,1,0,0,7,796568,75399.0,21.428571428571427,Relatively Low,Very Low,Relatively Low
+Ohio,0,0,3,12,0,0,0,0,5,4,0,2,2,0,28,11883304,927740.0,75.0,Very Low,Relatively Low,Relatively High
+Oklahoma,0,0,4,6,0,0,0,5,1,1,0,4,1,0,22,4095393,265779.0,57.14285714285714,Relatively Moderate,Relatively High,Relatively Moderate
+Oregon,1,0,7,0,1,2,0,7,16,4,0,4,4,1,47,4272371,331029.0,64.28571428571429,Relatively High,Very Low,Relatively Moderate
+Pennsylvania,0,0,2,9,0,0,0,0,5,0,0,2,2,0,20,13078751,1024206.0,87.5,Very Low,Relatively Moderate,Relatively High
+Rhode Island,0,0,3,0,0,0,0,0,2,1,0,1,2,0,9,1112308,82493.0,7.142857142857142,Very Low,Very Low,Relatively Low
+South Carolina,1,0,6,3,0,0,0,0,21,0,1,2,5,0,39,5478831,349965.0,71.42857142857143,Relatively Low,Relatively Low,Relatively Moderate
+South Dakota,0,0,3,2,0,0,0,2,3,2,0,3,0,0,15,924669,75179.0,26.785714285714285,Relatively Moderate,Relatively Moderate,Relatively Low
+Tennessee,0,1,4,61,0,1,1,33,19,0,1,5,1,4,131,7227750,549709.0,73.21428571428571,Very Low,Relatively Low,Relatively Moderate
+Texas,8,9,14,1,0,3,0,14,35,9,0,6,7,5,111,31290831,2709393.0,98.21428571428571,Relatively High,Very High,Relatively High
+Utah,0,0,5,0,0,0,0,10,25,1,0,4,1,0,46,3503613,300904.0,44.642857142857146,Relatively High,Relatively Low,Relatively Low
+Vermont,0,0,0,1,0,0,0,0,2,0,0,3,0,0,6,648493,45707.0,8.928571428571429,Very Low,No Expected Annual Losses,Relatively Low
+Virginia,1,1,4,26,0,3,0,9,17,3,1,6,5,1,77,8811195,764475.0,53.57142857142857,Relatively Low,Relatively High,Relatively Moderate
+Washington,1,0,7,0,1,0,0,1,8,2,0,11,1,0,32,7958180,854683.0,92.85714285714286,Relatively High,Very Low,Relatively Moderate
+West Virginia,1,0,1,13,0,3,0,2,6,1,0,4,0,1,32,1769979,107660.0,32.142857142857146,Very Low,Relatively Low,Relatively Moderate
+Wisconsin,0,0,3,5,0,0,0,0,7,5,0,3,1,1,25,5960975,451285.0,67.85714285714286,Very Low,Relatively Low,Relatively Moderate
+Wyoming,1,0,3,0,1,0,0,1,4,1,0,6,0,0,17,587618,52946.0,14.285714285714285,Relatively Low,Very Low,Relatively Low
