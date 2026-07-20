@@ -113,12 +113,22 @@ function setChart(data) {
 function updateChartFilter(data) {
     var activeCodes = getFilteredCodes(data);
     var scopeActive = rankingScope !== "all";
+    var queryActive = typeof isAIQueryActive === "function" && isAIQueryActive();
+    var queryCodes = typeof getAIQueryMatchedCodes === "function"
+        ? getAIQueryMatchedCodes()
+        : new Set();
     d3.selectAll(".bars")
         .classed("filter-active", function(d) {
             return scopeActive && activeCodes.has(d.State_Code);
         })
         .classed("filter-muted", function(d) {
             return scopeActive && !activeCodes.has(d.State_Code);
+        })
+        .classed("ai-query-match", function(d) {
+            return queryActive && queryCodes.has(d.State_Code);
+        })
+        .classed("ai-query-nonmatch", function(d) {
+            return queryActive && !queryCodes.has(d.State_Code);
         });
 }
 

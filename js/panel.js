@@ -82,8 +82,67 @@ function reportIndicatorCard(container, label, value, note) {
     }
 }
 
+function updateAIExplanation(state) {
+    var explanation = d3.select("#ai-explanation");
+    if (explanation.empty()) return;
+
+    explanation.selectAll(".ai-explanation-empty, .ai-explanation-list, .ai-explanation-recommendation").remove();
+
+    var biodiversityRisk = Number(state.Biodiversity_Risk);
+    var protectedArea = Number(state.Protected_Pct);
+    var humanPressure = Number(state.Human_Pressure);
+    var ecologicalVulnerability = Number(state.Ecological_Vulnerability);
+    var findings = [];
+
+    if (Number.isFinite(biodiversityRisk)) {
+        if (biodiversityRisk >= 75) {
+            findings.push("Biodiversity risk is high (" + formatNumber(biodiversityRisk, 1) + "/100).");
+        } else if (biodiversityRisk <= 25) {
+            findings.push("Biodiversity risk is relatively low (" + formatNumber(biodiversityRisk, 1) + "/100).");
+        } else {
+            findings.push("Biodiversity risk is moderate (" + formatNumber(biodiversityRisk, 1) + "/100).");
+        }
+    }
+    if (Number.isFinite(protectedArea)) {
+        findings.push(protectedArea <= 25
+            ? "Protected area coverage is limited (" + formatPercent(protectedArea) + ")."
+            : "Protected area coverage is " + formatPercent(protectedArea) + ".");
+    }
+    if (Number.isFinite(humanPressure) && humanPressure >= 75) {
+        findings.push("Human pressure is high (" + formatNumber(humanPressure, 1) + "/100).");
+    } else if (Number.isFinite(humanPressure) && humanPressure <= 25) {
+        findings.push("Human pressure is relatively low (" + formatNumber(humanPressure, 1) + "/100).");
+    }
+    if (Number.isFinite(ecologicalVulnerability) && ecologicalVulnerability >= 75) {
+        findings.push("Ecological vulnerability is high and merits closer review.");
+    }
+
+    if (!findings.length) {
+        findings.push("Available indicators are insufficient for a rule-based explanation.");
+    }
+
+    var list = explanation.append("ul").attr("class", "ai-explanation-list");
+    findings.forEach(function(finding) {
+        list.append("li").text(finding);
+    });
+
+    var recommendation;
+    if (biodiversityRisk >= 75 && protectedArea <= 25) {
+        recommendation = "Recommendation: consider this state for conservation priority review.";
+    } else if (humanPressure >= 75) {
+        recommendation = "Recommendation: investigate human-pressure drivers alongside conservation coverage.";
+    } else if (ecologicalVulnerability >= 75) {
+        recommendation = "Recommendation: compare ecological vulnerability with the state’s risk indicators.";
+    } else {
+        recommendation = "Recommendation: compare this state with the ranking chart and nearby states.";
+    }
+    explanation.append("p")
+        .attr("class", "ai-explanation-recommendation")
+        .text(recommendation);
+}
+
 function updatePanel(state) {
-    var panel = d3.select("#right-panel");
+    var panel = d3.select("#state-report-content");
     panel.html("");
 
     panel.append("div").attr("class", "panel-kicker").text("Selected State");
@@ -161,6 +220,8 @@ function updatePanel(state) {
     list.append("li").text(
         "Protected area coverage: " + formatPercent(state.Protected_Pct) + "."
     );
+
+    updateAIExplanation(state);
 }
 
 function addToolDescription() {

@@ -287,6 +287,10 @@ function createRankingScopeFilter(data) {
 function updateMapFilter(data) {
     var activeCodes = getFilteredCodes(data);
     var scopeActive = rankingScope !== "all";
+    var queryActive = typeof isAIQueryActive === "function" && isAIQueryActive();
+    var queryCodes = typeof getAIQueryMatchedCodes === "function"
+        ? getAIQueryMatchedCodes()
+        : new Set();
 
     d3.selectAll(".state-mark, .regions").classed("filter-active", function(d) {
         var record = d.properties || d;
@@ -294,6 +298,12 @@ function updateMapFilter(data) {
     }).classed("filter-muted", function(d) {
         var record = d.properties || d;
         return scopeActive && !activeCodes.has(record.State_Code);
+    }).classed("ai-query-match", function(d) {
+        var record = d.properties || d;
+        return queryActive && queryCodes.has(record.State_Code);
+    }).classed("ai-query-nonmatch", function(d) {
+        var record = d.properties || d;
+        return queryActive && !queryCodes.has(record.State_Code);
     });
 }
 
@@ -411,6 +421,7 @@ function setMap() {
         createAnalysisModeControl(currentStateData, renderDashboard);
         createDropdown(currentStateData, renderDashboard);
         createRankingScopeFilter(currentStateData);
+        setupAIQuery(currentStateData);
         renderDashboard();
 
         var stateSuggestions = document.createElement("datalist");

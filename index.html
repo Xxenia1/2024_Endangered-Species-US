@@ -148,17 +148,19 @@
 
         <!-- State report -->
         <aside id="right-panel" class="state-workspace">
-            <div class="panel-kicker">Selected State</div>
-            <h2>State Report</h2>
+            <div id="state-report-content">
+                <div class="panel-kicker">Selected State</div>
+                <h2>State Report</h2>
 
-            <div class="empty-state">
-                <strong>No state selected</strong>
-                <p>
-                    Click a state on the map or in the chart to view detailed
-                    biodiversity, habitat, risk, and conservation information.
-                </p>
-                    </div>
-                </aside>
+                <div class="empty-state">
+                    <strong>No state selected</strong>
+                    <p>
+                        Click a state on the map or in the chart to view detailed
+                        biodiversity, habitat, risk, and conservation information.
+                    </p>
+                </div>
+            </div>
+        </aside>
 
         <!-- Full ranking chart -->
         <section class="ranking-workspace">
@@ -184,6 +186,53 @@
                     <ol id="topStatesList" class="top-states-list"></ol>
                 </aside>
             </div>
+
+            <!-- Independent analysis workspace for natural-language, rule-based
+                 queries. It reuses the map/chart/report linked-view state. -->
+            <section id="ai-analysis-workspace" class="ai-analysis-workspace" aria-labelledby="ai-assistant-title">
+                <div class="ai-analysis-header">
+                    <div>
+                        <h2 id="ai-assistant-title">Natural Language Query</h2>
+                        <p>Ask for a biodiversity, risk, pressure, or conservation pattern across states.</p>
+                    </div>
+                    <span class="ai-query-badge">Rule-based preview</span>
+                </div>
+                <div class="ai-assistant-content">
+                    <form id="ai-query-form" class="ai-query-form">
+                        <label class="sr-only" for="ai-query-input">Natural language query</label>
+                        <input
+                            id="ai-query-input"
+                            type="search"
+                            autocomplete="off"
+                            placeholder="Show states with high biodiversity risk but low protected area"
+                        >
+                        <button id="ai-query-submit" type="submit">Send</button>
+                    </form>
+                    <div class="ai-query-examples" aria-label="Suggested queries">
+                        <span>Suggested Queries</span>
+                        <button type="button" data-ai-query-example="Show states with high biodiversity risk but low protected area">
+                            High risk + low protection
+                        </button>
+                        <button type="button" data-ai-query-example="Find states with high human pressure">
+                            High human pressure
+                        </button>
+                        <button type="button" data-ai-query-example="Show conservation priority states">
+                            Conservation priorities
+                        </button>
+                    </div>
+                    <div id="ai-query-interpretation" class="ai-query-interpretation" aria-live="polite">
+                        <div class="ai-query-interpretation-title">Applied Conditions</div>
+                        <p class="ai-query-empty">No query applied. Try a suggested query to highlight matching states.</p>
+                    </div>
+                    <div id="ai-explanation" class="ai-explanation" aria-live="polite">
+                        <div class="ai-explanation-heading">
+                            <span class="ai-explanation-kicker">AI Explanation / Recommendation</span>
+                        </div>
+                        <p class="ai-explanation-empty">Select a state to see a rule-based explanation from its dashboard indicators.</p>
+                    </div>
+                    <button id="ai-query-clear" class="ai-query-clear" type="button">Clear Conditions</button>
+                </div>
+            </section>
         </section>
 
         <div id="tooltip"></div>
@@ -198,6 +247,7 @@
     <script src="js/config.js"></script>
     <script src="js/chart.js"></script>
     <script src="js/panel.js"></script>
+    <script src="js/query.js"></script>
     <script src="js/map.js"></script>
     <script src="js/main.js"></script>
 </body>
