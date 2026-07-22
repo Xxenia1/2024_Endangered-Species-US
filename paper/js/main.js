@@ -1,50 +1,46 @@
-// Web Paper interaction layer. The paper intentionally uses no external
-// libraries: navigation and reading aids remain lightweight and local.
+// Lightweight notebook navigation: mobile sidebar, smooth section jumps,
+// active chapter state, and a back-to-top control.
 (function() {
-    var header = document.querySelector(".site-header");
-    var nav = document.getElementById("site-navigation");
-    var navToggle = document.querySelector(".nav-toggle");
+    var sidebar = document.getElementById("report-sidebar");
+    var toggle = document.querySelector(".sidebar-toggle");
+    var navigation = document.getElementById("sidebar-navigation");
     var backToTop = document.querySelector(".back-to-top");
-    var navLinks = Array.prototype.slice.call(document.querySelectorAll(".site-navigation a[href^='#']"));
-    var sections = navLinks.map(function(link) {
+    var links = Array.prototype.slice.call(document.querySelectorAll(".chapter-navigation a[href^='#']"));
+    var sections = links.map(function(link) {
         return document.querySelector(link.getAttribute("href"));
     }).filter(Boolean);
 
-    function closeMobileNav() {
-        if (!nav || !navToggle) return;
-        nav.classList.remove("is-open");
-        navToggle.setAttribute("aria-expanded", "false");
+    function closeSidebar() {
+        if (!sidebar || !toggle) return;
+        sidebar.classList.remove("is-open");
+        toggle.setAttribute("aria-expanded", "false");
     }
 
-    if (navToggle) {
-        navToggle.addEventListener("click", function() {
-            var isOpen = nav.classList.toggle("is-open");
-            navToggle.setAttribute("aria-expanded", String(isOpen));
+    if (toggle) {
+        toggle.addEventListener("click", function() {
+            var open = sidebar.classList.toggle("is-open");
+            toggle.setAttribute("aria-expanded", String(open));
         });
     }
 
-    navLinks.forEach(function(link) {
-        link.addEventListener("click", function() {
-            closeMobileNav();
-        });
+    links.forEach(function(link) {
+        link.addEventListener("click", closeSidebar);
     });
 
-    function updateScrollState() {
+    function updateReadingState() {
         var scrollY = window.scrollY || window.pageYOffset;
-        if (header) header.classList.toggle("is-scrolled", scrollY > 12);
         if (backToTop) backToTop.classList.toggle("is-visible", scrollY > 520);
-
-        var activeSection = null;
+        var active = null;
         sections.forEach(function(section) {
-            if (section.getBoundingClientRect().top <= 130) activeSection = section;
+            if (section.getBoundingClientRect().top <= 150) active = section;
         });
-        navLinks.forEach(function(link) {
-            link.classList.toggle("is-active", activeSection && link.getAttribute("href") === "#" + activeSection.id);
+        links.forEach(function(link) {
+            link.classList.toggle("is-active", Boolean(active) && link.getAttribute("href") === "#" + active.id);
         });
     }
 
-    window.addEventListener("scroll", updateScrollState, { passive: true });
-    updateScrollState();
+    window.addEventListener("scroll", updateReadingState, { passive: true });
+    updateReadingState();
 
     if (backToTop) {
         backToTop.addEventListener("click", function() {

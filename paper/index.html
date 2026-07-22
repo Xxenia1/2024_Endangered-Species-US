@@ -3,215 +3,117 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Web paper for an interactive visual analytics project exploring endangered species and environmental conditions across the United States.">
-    <title>Interactive Visual Analytics for Endangered Species</title>
+    <meta name="description" content="Computational research notebook for interactive visual analytics of endangered species and environmental conditions across the United States.">
+    <title>Endangered Species Visual Analytics · Research Notebook</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <header class="site-header" id="top">
-        <div class="nav-shell">
-            <a class="site-mark" href="#overview" aria-label="Web paper overview">Endangered Species VA</a>
-            <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-navigation">
-                <span></span><span></span><span></span>
-                <span class="sr-only">Toggle navigation</span>
-            </button>
-            <nav id="site-navigation" class="site-navigation" aria-label="Primary navigation">
-                <a href="#overview">Overview</a>
-                <a href="#data">Data</a>
-                <a href="#methods">Methods</a>
-                <a href="#design">Design</a>
-                <a href="#cases">Cases</a>
-                <a href="#discussion">Discussion</a>
-                <a href="#references">References</a>
-                <a class="nav-dashboard-link" href="../index.html">View Dashboard</a>
-            </nav>
+    <aside class="report-sidebar" id="report-sidebar">
+        <div class="sidebar-brand">
+            <a href="#introduction">Endangered Species<br>Visual Analytics</a>
+            <span>Computational research notebook</span>
         </div>
-    </header>
+        <button class="sidebar-toggle" type="button" aria-expanded="false" aria-controls="sidebar-navigation">
+            <span></span><span></span><span></span><span class="sr-only">Toggle chapters</span>
+        </button>
+        <nav id="sidebar-navigation" class="chapter-navigation" aria-label="Paper chapters">
+            <a href="#introduction">Introduction</a>
+            <a href="#data-preprocessing">Data &amp; Preprocessing</a>
+            <a href="#feature-engineering">Feature Engineering</a>
+            <a href="#biodiversity-risk">Biodiversity Risk Index</a>
+            <a href="#exploratory-data-analysis">Exploratory Data Analysis</a>
+            <a href="#spatial-statistics">Spatial Statistics</a>
+            <a href="#environmental-drivers">Environmental Driver Analysis</a>
+            <a href="#interactive-dashboard">Interactive Dashboard</a>
+            <a href="#case-studies">Case Studies</a>
+            <a href="#discussion">Discussion &amp; Future Work</a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="../index.html">View Dashboard</a>
+            <a href="#references">References</a>
+        </div>
+    </aside>
 
-    <main>
-        <section class="hero section-shell" id="overview">
-            <div class="hero-copy">
-                <p class="eyebrow">WEB PAPER · INTERACTIVE VISUAL ANALYTICS</p>
-                <h1>Interactive Visual Analytics for Exploring Endangered Species and Environmental Conditions Across the United States</h1>
-                <p class="hero-subtitle">A web-based dashboard that brings together endangered species records, environmental risk, land-cover composition, protected areas, and socioeconomic indicators for coordinated state-level exploration.</p>
-                <div class="hero-actions">
-                    <a class="button button-primary" href="../index.html">Explore the Dashboard</a>
-                    <!-- TODO: Replace # with the final GitHub repository URL. -->
-                    <a class="button button-secondary" href="#">View Source Code</a>
-                </div>
-                <p class="hero-note">A project paper describing the data workflow, interaction model, and exploratory analysis system.</p>
-            </div>
-            <div class="dashboard-preview" aria-label="Abstract dashboard preview placeholder">
-                <div class="preview-window-bar"><span></span><span></span><span></span><strong>Dashboard preview</strong></div>
-                <div class="preview-layout">
-                    <div class="preview-map-module">
-                        <span class="preview-label">Map Preview</span>
-                        <div class="preview-map-shape"></div>
-                        <i class="preview-dot dot-one"></i><i class="preview-dot dot-two"></i><i class="preview-dot dot-three"></i>
-                    </div>
-                    <div class="preview-side-stack">
-                        <div class="preview-ranking-module"><span class="preview-label">Ranking View</span><div class="preview-bars"><i></i><i></i><i></i><i></i><i></i></div></div>
-                        <div class="preview-report-module"><span class="preview-label">State Report</span><b></b><b></b><b></b></div>
-                    </div>
-                </div>
-                <p class="preview-caption">Conceptual interface placeholder — replace with a selected figure later.</p>
-            </div>
+    <main class="research-content" id="top">
+        <section class="report-hero" id="introduction">
+            <p class="eyebrow">WEB PAPER · COMPUTATIONAL RESEARCH NOTEBOOK</p>
+            <h1>Interactive Visual Analytics for Exploring Endangered Species and Environmental Conditions Across the United States</h1>
+            <p class="hero-subtitle">A state-level exploratory system that connects endangered species records, environmental risk, land-cover composition, protected areas, and socioeconomic indicators through coordinated spatial and statistical views.</p>
+            <div class="hero-meta"><span>Research prototype</span><span>State-level analysis</span><span>Methods in progress</span></div>
+            <div class="hero-actions"><a class="button button-primary" href="../index.html">Explore the Dashboard</a><!-- TODO: Replace # with the final GitHub repository URL. --><a class="button button-secondary" href="#">View Source Code</a></div>
+            <div class="dashboard-preview" aria-label="Abstract dashboard preview placeholder"><div class="preview-window-bar"><span></span><span></span><span></span><strong>Dashboard preview</strong></div><div class="preview-layout"><div class="preview-map-module"><span class="preview-label">Map Preview</span><div class="preview-map-shape"></div><i class="preview-dot dot-one"></i><i class="preview-dot dot-two"></i><i class="preview-dot dot-three"></i></div><div class="preview-side-stack"><div class="preview-ranking-module"><span class="preview-label">Ranking View</span><div class="preview-bars"><i></i><i></i><i></i><i></i><i></i></div></div><div class="preview-report-module"><span class="preview-label">State Report</span><b></b><b></b><b></b></div></div></div><p class="preview-caption">Conceptual interface placeholder — replace with a selected figure later.</p></div>
         </section>
 
-        <section class="paper-section narrow-section" id="abstract">
-            <p class="section-kicker">Abstract</p>
-            <h2>Abstract</h2>
-            <p>This project develops an interactive visual analytics dashboard for exploring endangered species and related environmental conditions across U.S. states. The system brings together state-level species records, environmental risk, land-cover composition, protected areas, population, and economic indicators in a coordinated interface.</p>
-            <p>Linked map, ranking, and state-report views support a progression from national overview to state-level detail. The project is designed for exploratory analysis: it helps users compare conditions, identify patterns worth investigating, and understand how derived indicators organize a complex collection of variables.</p>
+        <section class="research-section" id="data-preprocessing">
+            <div class="section-heading"><p class="section-kicker">Methods</p><h2>Data &amp; Preprocessing</h2><p class="section-lead">The current workflow brings several state-level and spatial inputs into a common analytical frame without asserting that they represent one identical year or measurement process.</p></div>
+            <div class="method-block"><h3>Method</h3><p>Species records, population, GDP, risk, land-cover, protected-area, and state-boundary inputs are cleaned, standardized, aggregated, and joined at the state level. The current implementation uses standardized state names as the join key; the source files and year references should be finalized before publication.</p></div>
+            <div class="table-wrap"><table><thead><tr><th>Data category</th><th>Role</th><th>Spatial unit</th><th>Source status</th></tr></thead><tbody><tr><td>Endangered species records</td><td>Species totals and categories</td><td>State</td><td>Source to be verified</td></tr><tr><td>State boundaries</td><td>Area and map geometry</td><td>State</td><td>Repository spatial data</td></tr><tr><td>Population</td><td>Population context and density</td><td>State</td><td>Source to be verified</td></tr><tr><td>Gross domestic product</td><td>Socioeconomic context</td><td>State</td><td>Source to be verified</td></tr><tr><td>Environmental risk</td><td>Risk indicators</td><td>State</td><td>Source to be verified</td></tr><tr><td>Land-cover composition</td><td>Forest, urban, cropland, wetland context</td><td>State</td><td>Source to be verified</td></tr><tr><td>Protected areas</td><td>Coverage and conservation proxy</td><td>State</td><td>Source to be verified</td></tr></tbody></table></div>
+            <div class="figure-placeholder"><span class="figure-label">Workflow diagram</span><strong>Figure placeholder · Data processing workflow</strong><p>Replace this placeholder after the final workflow figure is selected.</p></div>
+            <div class="result-placeholder"><strong>Results area</strong><span>Final source years, row counts, missing-value checks, and join diagnostics will be reported here after data verification.</span></div>
         </section>
 
-        <section class="paper-section" id="background">
-            <div class="section-shell">
-                <p class="section-kicker">Context</p>
-                <h2>Background and Motivation</h2>
-                <div class="reading-grid">
-                    <div>
-                        <p>Endangered species distribution cannot be understood through species counts alone. A state with many recorded species may also experience substantial human pressure, environmental risk, or uneven conservation protection. These conditions provide context for interpreting where biodiversity is visible and where additional attention may be warranted.</p>
-                        <p>In practice, the relevant information is distributed across datasets with different structures, units, and time references. A single-variable map can reveal one pattern while making it difficult to compare related factors. This project therefore treats coordination between views as part of the analytical method.</p>
-                    </div>
-                    <aside class="callout"><strong>Exploratory orientation</strong><p>The dashboard is intended to support questions and comparisons, not to present a final causal explanation or replace ecological assessment.</p></aside>
-                </div>
-            </div>
+        <section class="research-section" id="feature-engineering">
+            <div class="section-heading"><p class="section-kicker">Methods</p><h2>Feature Engineering</h2><p class="section-lead">Derived variables transform raw counts, areas, percentages, and source risk scores into comparable state-level indicators for exploration.</p></div>
+            <div class="method-block"><h3>Method</h3><p>Area-normalized measures use state area in an equal-area projection. Land-cover fields are class proportions. Human Pressure and the species-density component of Biodiversity Risk use Min-Max normalization across the 51-state dataset. No Z-score normalization is currently applied.</p></div>
+            <div class="formula-grid"><article><h3>Species Density</h3><code>Species Count / Area (km²)</code><p>Area-normalized species concentration.</p></article><article><h3>Population Density</h3><code>Population / Area (km²)</code><p>Area-normalized population context.</p></article><article><h3>GDP per Capita</h3><code>GDP (millions) × 1,000,000 / Population</code><p>Per-person economic context.</p></article><article><h3>Protected Area Coverage</h3><code>Protected Area (km²) / State Area (km²) × 100</code><p>Share of state area represented by selected protected areas.</p></article><article><h3>Human Pressure</h3><code>100 × (0.5 × MinMax(Population Density) + 0.5 × MinMax(Urban %))</code><p>Heuristic pressure index.</p></article><article><h3>Ecological Vulnerability</h3><code>100 × (0.4 × Risk + 0.3 × Urban + 0.3 × Lack of Forest)</code><p>Heuristic vulnerability index.</p></article></div>
+            <div class="figure-placeholder"><span class="figure-label">Formula placeholder</span><strong>Figure placeholder · Feature engineering map</strong><p>Replace this placeholder with a documented variable lineage diagram.</p></div>
+            <div class="result-placeholder"><strong>Results area</strong><span>Distribution summaries, normalization ranges, and sensitivity checks will be added after the final indicator specification is approved.</span></div>
         </section>
 
-        <section class="paper-section" id="questions">
-            <div class="section-shell">
-                <p class="section-kicker">Inquiry</p>
-                <h2>Project Questions</h2>
-                <p class="section-intro">The interface is organized around open-ended questions that guide exploration rather than formal hypotheses.</p>
-                <div class="question-grid">
-                    <article class="question-card"><h3>Where are endangered species concentrated?</h3><p>Compare species counts and density while keeping geographic context visible.</p></article>
-                    <article class="question-card"><h3>How do environmental and socioeconomic conditions vary among states?</h3><p>Switch indicator views to examine differences in habitat, population, and economic context.</p></article>
-                    <article class="question-card"><h3>Where do high biodiversity value and high human pressure overlap?</h3><p>Use coordinated highlighting to look for states that merit closer inspection.</p></article>
-                    <article class="question-card"><h3>Which states exhibit combined ecological vulnerability and limited conservation protection?</h3><p>Combine risk and conservation indicators as a starting point for prioritization discussions.</p></article>
-                </div>
-            </div>
+        <section class="research-section" id="biodiversity-risk">
+            <div class="section-heading"><p class="section-kicker">Composite indicator</p><h2>Biodiversity Risk Index</h2><p class="section-lead">The current index is a transparent, rule-based composite intended to organize exploratory comparisons. It is not a probability, causal estimate, or validated predictive model.</p></div>
+            <div class="method-block"><h3>Method</h3><p>Let <em>D</em> be Min-Max normalized Species Density, <em>H</em> be Human Pressure divided by 100, <em>R</em> be Risk Overall divided by 100, and <em>P</em> be Protected Area Coverage divided by 100.</p><div class="formula-placeholder"><strong>Formula placeholder</strong><code>Biodiversity Risk = 100 × (0.35D + 0.25H + 0.25R − 0.15P)</code><span>Final wording and weight rationale require methodological review.</span></div></div>
+            <div class="weight-table"><div><strong>Species Density</strong><span>+0.35</span></div><div><strong>Human Pressure</strong><span>+0.25</span></div><div><strong>Risk Overall</strong><span>+0.25</span></div><div><strong>Protected Area Coverage</strong><span>−0.15</span></div></div>
+            <div class="figure-placeholder"><span class="figure-label">Figure placeholder</span><strong>Biodiversity Risk component diagram</strong><p>No empirical result is shown here.</p></div>
+            <div class="result-placeholder"><strong>Results area</strong><span>Score distribution, weight sensitivity, and validation evidence will be inserted after the index is reviewed.</span></div>
         </section>
 
-        <section class="paper-section" id="data">
-            <div class="section-shell">
-                <p class="section-kicker">Inputs</p>
-                <h2>Data and Indicators</h2>
-                <p class="section-intro">The project uses state-level records and spatial boundaries already represented in the repository. Dataset provenance and year alignment remain part of the documentation work.</p>
-                <div class="table-wrap">
-                    <table>
-                        <thead><tr><th>Data category</th><th>Role in the project</th><th>Spatial unit</th><th>Source</th></tr></thead>
-                        <tbody>
-                            <tr><td>Endangered species records</td><td>Species totals and taxonomic categories</td><td>State</td><td>Source to be verified</td></tr>
-                            <tr><td>State boundaries</td><td>Map geometry and spatial context</td><td>State</td><td>Repository spatial data</td></tr>
-                            <tr><td>Population</td><td>Population context and density</td><td>State</td><td>Source to be verified</td></tr>
-                            <tr><td>Gross domestic product</td><td>Socioeconomic comparison</td><td>State</td><td>Source to be verified</td></tr>
-                            <tr><td>Environmental risk</td><td>Risk and vulnerability indicators</td><td>State</td><td>Source to be verified</td></tr>
-                            <tr><td>Land-cover composition</td><td>Forest, urban, cropland, and wetland context</td><td>State</td><td>Source to be verified</td></tr>
-                            <tr><td>Protected areas</td><td>Conservation coverage and effectiveness measures</td><td>State</td><td>Source to be verified</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="variable-list-block">
-                    <h3>Primary variables</h3>
-                    <div class="variable-list"><span>Species Count</span><span>Species Density</span><span>Population Density</span><span>GDP per Capita</span><span>Forest Percentage</span><span>Urban Percentage</span><span>Cropland Percentage</span><span>Wetland Percentage</span><span>Protected Area Percentage</span><span>Human Pressure</span><span>Conservation Effectiveness</span><span>Ecological Vulnerability</span><span>Biodiversity Risk</span></div>
-                </div>
-            </div>
+        <section class="research-section" id="exploratory-data-analysis">
+            <div class="section-heading"><p class="section-kicker">Analysis</p><h2>Exploratory Data Analysis</h2><p class="section-lead">Descriptive exploration will examine distributions, outliers, ranges, and relationships before any inferential interpretation.</p></div>
+            <div class="method-block"><h3>Method</h3><p>Planned summaries include state-level distributions, ranked comparisons, variable pairing, and inspection of influential observations such as small-area states or the District of Columbia. No final statistical result is asserted in this paper draft.</p></div>
+            <div class="analysis-grid"><div class="figure-placeholder"><span class="figure-label">Figure placeholder</span><strong>Distribution and outlier overview</strong><p>Analysis pending final data verification.</p></div><div class="figure-placeholder"><span class="figure-label">Figure placeholder</span><strong>Indicator comparison matrix</strong><p>Analysis pending final data verification.</p></div></div>
+            <div class="result-placeholder"><strong>Results area</strong><span>Descriptive statistics, charts, and interpretation notes will be added after the final dataset is frozen.</span></div>
         </section>
 
-        <section class="paper-section" id="methods">
-            <div class="section-shell">
-                <p class="section-kicker">Workflow</p>
-                <h2>Data Processing and Feature Engineering</h2>
-                <p class="section-intro">Processing is organized as a reproducible sequence that moves from source files to dashboard-ready spatial and tabular outputs.</p>
-                <div class="process-flow" aria-label="Data processing workflow">
-                    <div>Raw Data</div><span>→</span><div>Cleaning and Standardization</div><span>→</span><div>State-Level Aggregation</div><span>→</span><div>Variable Engineering</div><span>→</span><div>Spatial Join</div><span>→</span><div>CSV and GeoJSON Outputs</div><span>→</span><div>Interactive Dashboard</div>
-                </div>
-                <div class="definition-grid">
-                    <article><h3>Species Density</h3><p>A normalized view of recorded species relative to state area, making states of different sizes easier to compare.</p></article>
-                    <article><h3>Human Pressure</h3><p>A composite indicator that organizes human and socioeconomic pressure into a comparable state-level signal.</p></article>
-                    <article><h3>Conservation Effectiveness</h3><p>An indicator intended to summarize the relationship between protected-area coverage and conservation conditions.</p></article>
-                    <article><h3>Ecological Vulnerability</h3><p>A combined view of environmental exposure and sensitivity used to support risk-oriented exploration.</p></article>
-                    <article><h3>Biodiversity Risk</h3><p>A synthesized indicator that helps compare states across biodiversity-related risk dimensions.</p></article>
-                </div>
-                <div class="figure-placeholder figure-wide"><span class="figure-label">Figure 02</span><strong>Data processing workflow</strong><p>Replace this placeholder after the final workflow figure is selected.</p></div>
-            </div>
+        <section class="research-section" id="spatial-statistics">
+            <div class="section-heading"><p class="section-kicker">Planned analysis</p><h2>Spatial Statistics</h2><p class="section-lead">Spatial statistics are reserved for a later analysis stage and are not represented as completed findings.</p></div>
+            <div class="analysis-grid"><article class="method-card"><h3>Moran's I</h3><p><strong>Method placeholder:</strong> Define a spatial weights matrix and test global spatial autocorrelation for selected indicators.</p><p class="placeholder-note">Result placeholder — Moran's I, expected value, variance, and significance will be added after implementation.</p></article><article class="method-card"><h3>Getis-Ord Gi*</h3><p><strong>Method placeholder:</strong> Identify local clusters or potential hot spots using a documented spatial-neighbor definition.</p><p class="placeholder-note">Result placeholder — hot-spot maps, z-scores, and significance thresholds will be added after implementation.</p></article></div>
+            <div class="figure-placeholder"><span class="figure-label">Figure placeholder</span><strong>Spatial autocorrelation and hotspot maps</strong><p>Do not interpret this area as a completed result.</p></div>
+            <div class="result-placeholder"><strong>Results area</strong><span>Spatial weights, tests, multiple-comparison decisions, and diagnostics remain to be specified.</span></div>
         </section>
 
-        <section class="paper-section" id="design">
-            <div class="section-shell">
-                <p class="section-kicker">Interaction model</p>
-                <h2>Visual and Interaction Design</h2>
-                <div class="reading-grid">
-                    <div><p>The dashboard follows an overview-first strategy: the national map establishes spatial context, while details become available through state selection, ranking, and the report panel. This supports progressive disclosure without removing the surrounding comparison context.</p><p>Coordinated multiple views use a shared state identity. A state selected on the map or ranking chart is reflected in the report, while map and chart encodings complement one another rather than duplicating the same visual task.</p></div>
-                    <ul class="principle-list"><li>Overview first, details on demand</li><li>Coordinated multiple views</li><li>Consistent state selection</li><li>Progressive disclosure</li><li>Map and chart complementarity</li><li>Direct comparison through ranking</li><li>State-level contextual reporting</li></ul>
-                </div>
-                <div class="figure-placeholder figure-wide"><span class="figure-label">Figure 07</span><strong>Interaction flow</strong><p>Replace this placeholder after the final interaction diagram is selected.</p></div>
-            </div>
+        <section class="research-section" id="environmental-drivers">
+            <div class="section-heading"><p class="section-kicker">Planned analysis</p><h2>Environmental Driver Analysis</h2><p class="section-lead">This section will examine associations between biodiversity indicators and environmental or socioeconomic context without implying causality.</p></div>
+            <div class="method-block"><h3>Method placeholder</h3><p>Candidate approaches include correlation analysis, transparent regression specifications, and sensitivity checks for area, year, and indicator construction. Any model would require explicit assumptions, diagnostics, and validation before interpretation.</p></div>
+            <div class="figure-placeholder"><span class="figure-label">Figure placeholder</span><strong>Driver relationship and regression summary</strong><p>Regression coefficients and uncertainty are not available yet.</p></div>
+            <div class="result-placeholder"><strong>Results area</strong><span>No regression, causal, or driver-ranking result is reported in the current version.</span></div>
         </section>
 
-        <section class="paper-section" id="components">
-            <div class="section-shell">
-                <p class="section-kicker">Interface</p>
-                <h2>Dashboard Components</h2>
-                <div class="component-grid">
-                    <article class="component-card"><div class="figure-placeholder"><span class="figure-label">Figure 03</span><strong>Species bubble map</strong><p>Replace this placeholder after the final figure is selected.</p></div><h3>Species Bubble Map</h3><dl><dt>Purpose</dt><dd>Show the geographic distribution of a selected species variable.</dd><dt>Why this form</dt><dd>Bubble size supports an immediate spatial comparison while preserving state boundaries.</dd><dt>Interaction</dt><dd>Hover and click connect map marks to labels and the State Report.</dd></dl></article>
-                    <article class="component-card"><div class="figure-placeholder"><span class="figure-label">Figure 04</span><strong>Environmental choropleth</strong><p>Replace this placeholder after the final figure is selected.</p></div><h3>Environmental Choropleth Map</h3><dl><dt>Purpose</dt><dd>Compare environmental, risk, socioeconomic, and conservation indicators.</dd><dt>Why this form</dt><dd>Color intensity communicates regional variation across a shared geographic frame.</dd><dt>Interaction</dt><dd>Changing the variable updates the map legend and linked ranking.</dd></dl></article>
-                    <article class="component-card"><div class="figure-placeholder"><span class="figure-label">Figure 05</span><strong>Ranking chart</strong><p>Replace this placeholder after the final figure is selected.</p></div><h3>State Ranking Chart</h3><dl><dt>Purpose</dt><dd>Make relative state differences explicit through direct comparison.</dd><dt>Why this form</dt><dd>Ordered bars reveal rank and spread more directly than a map alone.</dd><dt>Interaction</dt><dd>Clicking a bar selects the same state in the report and map.</dd></dl></article>
-                    <article class="component-card"><div class="figure-placeholder"><span class="figure-label">Figure 06</span><strong>State report</strong><p>Replace this placeholder after the final figure is selected.</p></div><h3>State Report Panel</h3><dl><dt>Purpose</dt><dd>Provide contextual biodiversity, habitat, risk, and conservation details.</dd><dt>Why this form</dt><dd>A structured report supports details on demand without changing the map view.</dd><dt>Interaction</dt><dd>It stays synchronized with map and chart selections.</dd></dl></article>
-                </div>
-            </div>
+        <section class="research-section" id="interactive-dashboard">
+            <div class="section-heading"><p class="section-kicker">System</p><h2>Interactive Dashboard</h2><p class="section-lead">The dashboard is the operational interface for coordinated visual exploration of the state-level dataset.</p></div>
+            <div class="method-block"><h3>Interaction design</h3><p>The system keeps a national map, a D3 ranking chart, and a State Report linked through shared state identity. Species variables use bubble encoding, while environmental, risk, and conservation indicators use choropleth encoding. Natural-language query support remains a front-end rule-based interface.</p></div>
+            <div class="component-grid"><article class="component-card"><div class="figure-placeholder"><span class="figure-label">Figure placeholder</span><strong>Species bubble map</strong><p>Replace after the final figure is selected.</p></div><h3>Species Bubble Map</h3><p>Shows the spatial distribution of a selected species variable.</p></article><article class="component-card"><div class="figure-placeholder"><span class="figure-label">Figure placeholder</span><strong>Environmental choropleth</strong><p>Replace after the final figure is selected.</p></div><h3>Environmental Choropleth Map</h3><p>Compares continuous or integrated indicators across states.</p></article><article class="component-card"><div class="figure-placeholder"><span class="figure-label">Figure placeholder</span><strong>Ranking chart</strong><p>Replace after the final figure is selected.</p></div><h3>State Ranking Chart</h3><p>Supports direct state comparison and selection.</p></article><article class="component-card"><div class="figure-placeholder"><span class="figure-label">Figure placeholder</span><strong>State report</strong><p>Replace after the final figure is selected.</p></div><h3>State Report Panel</h3><p>Provides contextual details on demand.</p></article></div>
+            <div class="result-placeholder"><strong>Results area</strong><span>Interaction evidence and user-evaluation results will be added after formal evaluation.</span></div>
         </section>
 
-        <section class="paper-section" id="cases">
-            <div class="section-shell">
-                <p class="section-kicker">Exploration</p>
-                <h2>Exploratory Analysis Cases</h2>
-                <p class="section-intro">These cases define how the system may be used. Results are intentionally left open until the final data and indicator review is complete.</p>
-                <div class="case-list">
-                    <article class="case-card"><div class="case-number">Exploratory case</div><div><h3>Exploring Species Concentration</h3><p><strong>Analytical question:</strong> Where are endangered species counts or densities concentrated?</p><p><strong>Interaction pathway:</strong> Select a species variable, inspect the bubble map, and compare the linked ranking.</p><p><strong>Evidence to capture:</strong> Distribution patterns, notable contrasts, and states selected for follow-up.</p><div class="figure-placeholder"><span class="figure-label">Figure 08</span><strong>Species concentration exploration figure</strong><p>Analysis pending final data verification.</p></div></div></article>
-                    <article class="case-card"><div class="case-number">Exploratory case</div><div><h3>Comparing Human Pressure and Biodiversity Risk</h3><p><strong>Analytical question:</strong> Where might high human pressure and biodiversity risk appear together?</p><p><strong>Interaction pathway:</strong> Switch between indicator views, apply a comparison filter, and inspect state-level context.</p><p><strong>Evidence to capture:</strong> Overlapping patterns and the assumptions behind any comparison.</p><div class="figure-placeholder"><span class="figure-label">Figure 09</span><strong>Human pressure and risk exploration figure</strong><p>Analysis pending final data verification.</p></div></div></article>
-                    <article class="case-card"><div class="case-number">Exploratory case</div><div><h3>Identifying Potential Conservation Priorities</h3><p><strong>Analytical question:</strong> Which states combine ecological vulnerability with limited conservation protection?</p><p><strong>Interaction pathway:</strong> Compare risk and conservation indicators, then review the State Report for context.</p><p><strong>Evidence to capture:</strong> Candidate states, sensitivity to indicator choices, and follow-up questions.</p><div class="figure-placeholder"><span class="figure-label">Figure 10</span><strong>Conservation priority exploration figure</strong><p>Analysis pending final data verification.</p></div></div></article>
-                </div>
-            </div>
+        <section class="research-section" id="case-studies">
+            <div class="section-heading"><p class="section-kicker">Exploration cases</p><h2>Case Studies</h2><p class="section-lead">The following cases define analysis pathways without fabricating findings.</p></div>
+            <div class="case-list"><article class="case-card"><h3>Exploring Species Concentration</h3><p><strong>Analytical question:</strong> Where are endangered species counts or densities concentrated?</p><p><strong>Interaction pathway:</strong> Select a species variable, inspect the bubble map, and compare the ranking.</p><div class="figure-placeholder"><span class="figure-label">Figure placeholder</span><strong>Species concentration case</strong><p>Analysis pending final data verification.</p></div></article><article class="case-card"><h3>Comparing Human Pressure and Biodiversity Risk</h3><p><strong>Analytical question:</strong> Where might high human pressure and biodiversity risk appear together?</p><p><strong>Interaction pathway:</strong> Compare indicator views and inspect linked state context.</p><div class="figure-placeholder"><span class="figure-label">Figure placeholder</span><strong>Human pressure and risk case</strong><p>Analysis pending final data verification.</p></div></article><article class="case-card"><h3>Identifying Potential Conservation Priorities</h3><p><strong>Analytical question:</strong> Which states combine ecological vulnerability with limited protection?</p><p><strong>Interaction pathway:</strong> Compare risk and conservation indicators, then review the State Report.</p><div class="figure-placeholder"><span class="figure-label">Figure placeholder</span><strong>Conservation priority case</strong><p>Analysis pending final data verification.</p></div></article></div>
         </section>
 
-        <section class="paper-section" id="discussion">
-            <div class="section-shell">
-                <p class="section-kicker">Reflection</p>
-                <h2>Discussion</h2>
-                <p>The system places otherwise dispersed variables into one coordinated analysis environment. A national overview can lead into state-level detail without requiring users to leave the spatial context, and linked views reduce the cost of switching between a map, a ranking, and a report.</p>
-                <p>Derived indicators also provide a practical way to organize complex variables for exploration. They can help users formulate comparisons and identify states for closer review, while keeping the underlying variables visible in the report and documentation.</p>
-                <div class="caution-box"><strong>Interpretation boundary</strong><p>This dashboard is designed for exploratory analysis. It cannot directly replace ecological protection decisions, and its composite indicators depend on variable selection, normalization, and modeling assumptions.</p></div>
-            </div>
+        <section class="research-section" id="discussion">
+            <div class="section-heading"><p class="section-kicker">Interpretation</p><h2>Discussion &amp; Future Work</h2><p class="section-lead">The system is a research prototype for organizing complex environmental evidence, not a completed ecological decision model.</p></div>
+            <div class="discussion-grid"><div><h3>Discussion</h3><p>Coordinated views place dispersed variables into one analytical environment and support movement from national overview to state-level detail. Derived indicators help organize complex variables, while direct interaction reduces the cost of switching between spatial, ranked, and contextual representations.</p><p>The system supports exploratory analysis and cannot replace ecological protection decisions. Composite indicators depend on variable selection, normalization choices, and manually specified weights.</p></div><div><h3>Future work</h3><ul class="long-list"><li>County-level or finer-scale analysis</li><li>Temporal comparison</li><li>Improved ecological validation</li><li>Scenario-based filtering</li><li>Natural-language query support</li><li>Usability evaluation</li><li>Transparent indicator weighting</li></ul></div></div>
+            <div class="result-placeholder"><strong>Results area</strong><span>Formal discussion of validity, sensitivity, and user evaluation will be updated as the research workflow progresses.</span></div>
         </section>
 
-        <section class="paper-section" id="limitations">
-            <div class="section-shell">
-                <p class="section-kicker">Scope</p>
-                <h2>Limitations</h2>
-                <ul class="long-list"><li>State-level aggregation may hide local variation.</li><li>Different datasets may represent different years.</li><li>Composite indicators depend on modeling assumptions.</li><li>The dashboard does not establish causality.</li><li>Ecological conditions change over time.</li><li>No formal user evaluation has been conducted.</li></ul>
-            </div>
+        <section class="research-section references-section" id="references">
+            <div class="section-heading"><p class="section-kicker">Sources</p><h2>References</h2></div>
+            <p class="reference-placeholder">References will be finalized after all datasets and methodological sources are verified.</p>
         </section>
 
-        <section class="paper-section" id="future-work">
-            <div class="section-shell">
-                <p class="section-kicker">Next steps</p>
-                <h2>Future Work</h2>
-                <div class="future-grid"><span>County-level or finer-scale analysis</span><span>Temporal comparison</span><span>Improved ecological validation</span><span>Scenario-based filtering</span><span>Natural-language query support</span><span>Usability evaluation</span><span>More transparent indicator weighting</span></div>
-            </div>
-        </section>
-
-        <section class="paper-section" id="conclusion">
-            <div class="section-shell narrow-section"><p class="section-kicker">Closing</p><h2>Conclusion</h2><p>This project combines data processing, spatial analysis, visual encoding, interaction design, and Web development into an exploratory system for endangered species and environmental conditions across the United States. Its central contribution is a coordinated environment in which users can move between overview, comparison, and context while keeping interpretation boundaries visible.</p></div>
-        </section>
-
-        <section class="paper-section" id="references">
-            <div class="section-shell narrow-section"><p class="section-kicker">Sources</p><h2>References</h2><p class="reference-placeholder">References will be finalized after all datasets and methodological sources are verified.</p></div>
-        </section>
+        <footer class="report-footer"><p>Interactive Visual Analytics for Endangered Species · Computational research notebook</p><a href="#top">Back to top</a></footer>
     </main>
-
-    <footer class="site-footer"><div class="section-shell"><p>Interactive Visual Analytics for Endangered Species · Web Paper</p><a href="#top">Back to top</a></div></footer>
     <button class="back-to-top" type="button" aria-label="Back to top">↑</button>
     <script src="js/main.js"></script>
 </body>

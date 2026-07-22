@@ -16,7 +16,7 @@ While biodiversity faces unprecedented acceleration in extinction rates, existin
 * **RQ1:** How can interactive visualization improve users’ understanding of AI-generated habitat suitability predictions?
 * **RQ2:** How can uncertainty in ecological prediction models be effectively communicated to support decision-making?
 * **RQ3:** How does explainable AI influence trust and confidence in conservation decision-making?
-* **RQ3:** How can human-AI interaction design improve decision quality in endangered species conservation?
+* **RQ4:** How can human-AI interaction design improve decision quality in endangered species conservation?
 
 ---
 
