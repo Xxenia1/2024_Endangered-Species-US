@@ -1,0 +1,145 @@
+/* Paper-style presentation for Figure 2 and its explanatory note. */
+#fig-brs-map figcaption,
+#fig-correlation-heatmap figcaption,
+#fig-morans-i figcaption,
+#fig-hotspot-map figcaption,
+#fig-interactive-framework figcaption,
+#fig-overview-comparison-detail figcaption,
+#fig-regional-profile figcaption,
+#fig-statistical-synthesis figcaption {
+  color: #000;
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 1.45;
+  margin-top: 0.6rem;
+  text-align: center;
+}
+
+.figure-note {
+  color: #000;
+  font-size: 0.95rem;
+  font-style: italic;
+  line-height: 1.45;
+  margin: 0.35rem auto 1.25rem;
+  max-width: 10in;
+}
+
+/* Centered table title with a clear boxed grid and shaded header. */
+.paper-table {
+  margin: 1.25rem auto;
+  max-width: 10in;
+}
+
+.paper-table > p:first-child {
+  color: #000;
+  font-size: 1rem;
+  font-style: normal;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.paper-table > table {
+  border: 1px solid #9fa9a2;
+  border-collapse: collapse;
+  color: #000;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+}
+
+.paper-table > table > :not(caption) > * > * {
+  background-color: #fff !important;
+  border: 1px solid #b7c0ba !important;
+  color: #000;
+}
+
+.paper-table > table thead th {
+  background-color: #e5efe7 !important;
+  font-weight: 600;
+}
+
+.paper-table > p:last-child {
+  color: #000;
+  font-size: 0.95rem;
+  font-style: italic;
+  line-height: 1.45;
+  margin-top: 0.45rem;
+}
+
+/* Table 6: prioritize state--statistic pairs while keeping the count compact. */
+.hotspot-table > table {
+  table-layout: fixed;
+}
+
+.hotspot-table > table col:nth-child(1) {
+  width: 21% !important;
+}
+
+.hotspot-table > table col:nth-child(2) {
+  width: 10% !important;
+}
+
+.hotspot-table > table col:nth-child(3) {
+  width: 51% !important;
+}
+
+.hotspot-table > table col:nth-child(4) {
+  width: 18% !important;
+}
+
+.hotspot-table > table th:nth-child(1),
+.hotspot-table > table td:nth-child(1) {
+  text-align: left !important;
+}
+
+.hotspot-table > table th:nth-child(2),
+.hotspot-table > table td:nth-child(2) {
+  text-align: center !important;
+}
+
+.hotspot-table > table th:nth-child(3),
+.hotspot-table > table td:nth-child(3) {
+  text-align: left !important;
+  white-space: nowrap;
+}
+
+.hotspot-table > table th:nth-child(4),
+.hotspot-table > table td:nth-child(4) {
+  text-align: left !important;
+}
+
+/* Tables in the portfolio-oriented closing sections keep numeric comparisons compact. */
+.regional-table > table {
+  table-layout: fixed;
+}
+
+.regional-table > table th:first-child,
+.regional-table > table td:first-child {
+  text-align: left !important;
+  width: 18%;
+}
+
+.regional-table > table th:not(:first-child),
+.regional-table > table td:not(:first-child) {
+  text-align: right !important;
+}
+
+.limitations-table > table {
+  table-layout: fixed;
+}
+
+.limitations-table > table th:nth-child(1),
+.limitations-table > table td:nth-child(1) {
+  width: 20%;
+}
+
+.limitations-table > table th:nth-child(2),
+.limitations-table > table td:nth-child(2) {
+  width: 40%;
+}
+
+.limitations-table > table th:nth-child(3),
+.limitations-table > table td:nth-child(3) {
+  width: 40%;
+}

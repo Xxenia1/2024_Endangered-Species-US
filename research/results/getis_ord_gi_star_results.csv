@@ -1,0 +1,52 @@
+State,Risk Score,Gi*,Permutation p-value,FDR-adjusted p-value,Classification
+Alabama,17.935535,0.965415,0.2779,0.6484,Not significant
+Alaska,1.808132,,,,Not assessed (no Queen-contiguous neighbors)
+Arizona,19.788475,-0.431943,0.6207,0.8719,Not significant
+Arkansas,12.103813,0.848691,0.3560,0.6785,Not significant
+California,24.040237,0.323639,0.6940,0.8719,Not significant
+Colorado,12.838018,-1.317401,0.1769,0.5673,Not significant
+Connecticut,12.273008,-0.489702,0.5499,0.8523,Not significant
+Delaware,9.038028,0.256633,0.7594,0.9076,Not significant
+District of Columbia,61.923359,2.591890,0.0397,0.4157,Nominal hotspot (unadjusted p < .05)
+Florida,24.651001,1.091844,0.1978,0.5673,Not significant
+Georgia,21.024023,1.557928,0.1157,0.4724,Not significant
+Hawaii,40.260093,,,,Not assessed (no Queen-contiguous neighbors)
+Idaho,3.938435,-1.737577,0.0893,0.4376,Not significant
+Illinois,24.809446,0.766125,0.4052,0.6846,Not significant
+Indiana,16.580398,0.833249,0.3409,0.6785,Not significant
+Iowa,13.582525,0.051683,0.9544,0.9867,Not significant
+Kansas,12.846585,-0.199426,0.8099,0.9430,Not significant
+Kentucky,15.808690,0.824361,0.3877,0.6785,Not significant
+Louisiana,20.680656,0.490776,0.5545,0.8523,Not significant
+Maine,4.145004,-1.562864,0.0638,0.4376,Not significant
+Maryland,11.273127,1.650056,0.1059,0.4717,Not significant
+Massachusetts,10.150021,-1.439744,0.1355,0.5107,Not significant
+Michigan,16.201188,0.822343,0.3679,0.6785,Not significant
+Minnesota,16.024497,-0.935560,0.3035,0.6760,Not significant
+Mississippi,12.232618,0.340232,0.6884,0.8719,Not significant
+Missouri,21.874418,0.328987,0.7292,0.8933,Not significant
+Montana,4.978605,-2.748384,0.0148,0.4157,Nominal coldspot (unadjusted p < .05)
+Nebraska,10.011288,-1.177444,0.2084,0.5673,Not significant
+Nevada,8.516177,-0.493492,0.5740,0.8523,Not significant
+New Hampshire,5.311459,-2.103955,0.0509,0.4157,Not significant
+New Jersey,22.663319,0.844535,0.3250,0.6785,Not significant
+New Mexico,7.206498,-0.107744,0.9013,0.9814,Not significant
+New York,22.237762,0.036281,0.9666,0.9867,Not significant
+North Carolina,23.534158,1.084942,0.2328,0.5704,Not significant
+North Dakota,3.112093,-1.683614,0.0851,0.4376,Not significant
+Ohio,20.081728,0.374893,0.6658,0.8719,Not significant
+Oklahoma,14.618583,-0.006565,0.9944,0.9944,Not significant
+Oregon,14.731771,-0.166789,0.8468,0.9430,Not significant
+Pennsylvania,22.852500,0.408324,0.6487,0.8719,Not significant
+Rhode Island,7.246701,-0.986560,0.2273,0.5704,Not significant
+South Carolina,18.839321,1.078797,0.1972,0.5673,Not significant
+South Dakota,5.525318,-2.161006,0.0391,0.4157,Nominal coldspot (unadjusted p < .05)
+Tennessee,20.363383,0.850986,0.3781,0.6785,Not significant
+Texas,25.176756,0.169044,0.8377,0.9430,Not significant
+Utah,9.526858,-1.801035,0.0731,0.4376,Not significant
+Vermont,2.194472,-1.133857,0.1985,0.5673,Not significant
+Virginia,14.910174,2.072490,0.0461,0.4157,Nominal hotspot (unadjusted p < .05)
+Washington,21.635191,-0.335273,0.6870,0.8719,Not significant
+West Virginia,8.407337,0.079386,0.9258,0.9862,Not significant
+Wisconsin,16.225548,0.511299,0.5618,0.8523,Not significant
+Wyoming,2.077884,-2.430175,0.0214,0.4157,Nominal coldspot (unadjusted p < .05)

@@ -1,0 +1,1501 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Xenia(Xun) Gong">
+
+<title>Quantifying U.S. Biodiversity Risk: A Spatial-Statistical Framework and Interactive Visual Analysis</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="webPaper_files/libs/clipboard/clipboard.min.js"></script>
+<script src="webPaper_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="webPaper_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="webPaper_files/libs/quarto-html/popper.min.js"></script>
+<script src="webPaper_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="webPaper_files/libs/quarto-html/anchor.min.js"></script>
+<link href="webPaper_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="webPaper_files/libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="webPaper_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="webPaper_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="webPaper_files/libs/bootstrap/bootstrap-8ffd5f67044e5306d9846f29df41dda5.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="webPaper_files/libs/quarto-diagram/mermaid.min.js"></script>
+<script src="webPaper_files/libs/quarto-diagram/mermaid-init.js"></script>
+<link href="webPaper_files/libs/quarto-diagram/mermaid.css" rel="stylesheet">
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="paper-style.css">
+</head>
+
+<body class="quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article toc-left">
+<div id="quarto-sidebar-toc-left" class="sidebar toc-left">
+  <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="1">
+    <h2 id="toc-title">Contents</h2>
+   
+  <ul class="collapse">
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#data-and-feature-engineering" id="toc-data-and-feature-engineering" class="nav-link" data-scroll-target="#data-and-feature-engineering">Data and Feature Engineering</a>
+  <ul class="collapse">
+  <li><a href="#data-sources" id="toc-data-sources" class="nav-link" data-scroll-target="#data-sources">Data Sources</a></li>
+  <li><a href="#data-preprocessing" id="toc-data-preprocessing" class="nav-link" data-scroll-target="#data-preprocessing">Data Preprocessing</a></li>
+  <li><a href="#feature-engineering" id="toc-feature-engineering" class="nav-link" data-scroll-target="#feature-engineering">Feature Engineering</a></li>
+  </ul></li>
+  <li><a href="#spatial-statistical-analysis-and-results" id="toc-spatial-statistical-analysis-and-results" class="nav-link" data-scroll-target="#spatial-statistical-analysis-and-results">Spatial Statistical Analysis and Results</a>
+  <ul class="collapse">
+  <li><a href="#biodiversity-risk-score-construction" id="toc-biodiversity-risk-score-construction" class="nav-link" data-scroll-target="#biodiversity-risk-score-construction">Biodiversity Risk Score Construction</a></li>
+  <li><a href="#correlation-analysis" id="toc-correlation-analysis" class="nav-link" data-scroll-target="#correlation-analysis">Correlation Analysis</a></li>
+  <li><a href="#spatial-autocorrelation-analysis" id="toc-spatial-autocorrelation-analysis" class="nav-link" data-scroll-target="#spatial-autocorrelation-analysis">Spatial Autocorrelation Analysis</a></li>
+  <li><a href="#hotspot-analysis" id="toc-hotspot-analysis" class="nav-link" data-scroll-target="#hotspot-analysis">Hotspot Analysis</a></li>
+  </ul></li>
+  <li><a href="#visualization-and-interactive-analysis" id="toc-visualization-and-interactive-analysis" class="nav-link" data-scroll-target="#visualization-and-interactive-analysis">Visualization and Interactive Analysis</a>
+  <ul class="collapse">
+  <li><a href="#dashboard-design" id="toc-dashboard-design" class="nav-link" data-scroll-target="#dashboard-design">Dashboard Design</a></li>
+  <li><a href="#interactive-workflow" id="toc-interactive-workflow" class="nav-link" data-scroll-target="#interactive-workflow">Interactive Workflow</a></li>
+  <li><a href="#regional-comparative-exploration" id="toc-regional-comparative-exploration" class="nav-link" data-scroll-target="#regional-comparative-exploration">Regional Comparative Exploration</a></li>
+  </ul></li>
+  <li><a href="#discussion" id="toc-discussion" class="nav-link" data-scroll-target="#discussion">Discussion</a>
+  <ul class="collapse">
+  <li><a href="#key-insights-policy-implications" id="toc-key-insights-policy-implications" class="nav-link" data-scroll-target="#key-insights-policy-implications">Key Insights &amp; Policy Implications</a></li>
+  <li><a href="#limitations-future-work" id="toc-limitations-future-work" class="nav-link" data-scroll-target="#limitations-future-work">Limitations &amp; Future Work</a></li>
+  </ul></li>
+  </ul>
+</nav>
+</div>
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Quantifying U.S. Biodiversity Risk: A Spatial-Statistical Framework and Interactive Visual Analysis</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Xenia(Xun) Gong </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">Invalid Date</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="introduction" class="level1">
+<h1>Introduction</h1>
+<p>Biodiversity loss has emerged as one of the most critical environmental challenges of the 21st century. In the United States, despite decades of regulatory frameworks such as the Endangered Species Act (ESA), ecosystems face unprecedented threats from habitat fragmentation, rapid urbanization expansion, and accelerating climate change. A fundamental challenge in national environmental governance lies in the strategic allocation of limited conservation resources. Because ecological stress and species vulnerability are unevenly distributed, policymakers often struggle to identify where interventions will yield the highest ecological return.</p>
+<p>Traditional conservation prioritizing frequently relies on aggregate metrics, such as raw species richness or total count of threatened species. However, simple counts fail to reflect true ecological vulnerability because states differ fundamentally in geographic area, protected area coverage, human population pressure, and climatic stress. For instance, a state with high species diversity but expansive, well-connected protected lands presents a starkly different risk profile than a smaller, densely populated state experiencing rapid land-use conversion. Evaluating biodiversity risk without accounting for these baseline spatial and anthropogenic variables yields a distorted picture, leading to potentially misdirected conservation funding and reactive policy-making.</p>
+<p>To overcome these limitations, this study proposes a state-level spatial-statistical framework designed to objectively quantify biodiversity risk across the United States. By integrating heterogeneous datasets—including species occurrence, land cover, population density, climate projections, and protected area boundaries—we implement an advanced feature engineering pipeline to normalize multi-dimensional indicators into a unified Biodiversity Risk Score (BRS). Furthermore, rather than treating states as isolated administrative units, this framework employs spatial statistics, including global Moran’s <span class="math inline">I</span> and Getis–Ord <span class="math inline">G_i^*</span> hotspot analysis, to detect spatial auto-correlation, identify regional risk clusters, and capture cross-border ecological spillover effects.</p>
+<p>To bridge the gap between complex spatial-statistical modeling and practical decision-making, we build a dashboard, which serves as an interactive visual analytics interface that enables users to explore spatial patterns, compare indicators, and examine local risk profiles.</p>
+</section>
+<section id="data-and-feature-engineering" class="level1">
+<h1>Data and Feature Engineering</h1>
+<section id="data-sources" class="level2">
+<h2 class="anchored" data-anchor-id="data-sources">Data Sources</h2>
+<p>To construct a comprehensive biodiversity risk assessment framework, this study integrates multi-source geospatial, environmental, socioeconomic, and biodiversity datasets. All datasets were aggregated at the U.S. state level to enable spatial comparison and statistical analysis.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 23%">
+<col style="width: 29%">
+<col style="width: 23%">
+<col style="width: 23%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Dataset</th>
+<th>Description</th>
+<th>Category</th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>State Boundary</td>
+<td>Administrative boundaries and spatial reference units</td>
+<td>Geographic data</td>
+<td>U.S. Census Bureau TIGER/Line</td>
+</tr>
+<tr class="even">
+<td>Protected Area</td>
+<td>Spatial distribution and coverage of protected lands</td>
+<td>Conservation data</td>
+<td>Protected Areas Database of the United States (PAD-US)</td>
+</tr>
+<tr class="odd">
+<td>Endangered Species Data</td>
+<td>State-level endangered and threatened species counts</td>
+<td>Biodiversity data</td>
+<td>U.S. Fish and Wildlife Service (USFWS) ECOS</td>
+</tr>
+<tr class="even">
+<td>Population and GDP</td>
+<td>Demographic and socioeconomic indicators representing human activity intensity</td>
+<td>Socioeconomic data</td>
+<td>U.S. Census Bureau</td>
+</tr>
+<tr class="odd">
+<td>Natural Hazard Risk</td>
+<td>Environmental hazards including wildfire, drought, and flood risks</td>
+<td>Environmental data</td>
+<td>FEMA National Risk Index</td>
+</tr>
+<tr class="even">
+<td>Land Cover</td>
+<td>Land cover composition including forest, urban, agricultural, and wetland areas</td>
+<td>Environmental data</td>
+<td>National Land Cover Database (NLCD)</td>
+</tr>
+</tbody>
+</table>
+<p>These datasets represent four major dimensions influencing biodiversity vulnerability:</p>
+<ul>
+<li><strong>Biodiversity pressure:</strong> endangered species distribution and concentration.</li>
+<li><strong>Habitat condition:</strong> land cover composition and protected area coverage.</li>
+<li><strong>Anthropogenic pressure:</strong> population density and urban development intensity.</li>
+<li><strong>Environmental stress:</strong> climate-related hazards and ecosystem vulnerability.</li>
+</ul>
+<hr>
+</section>
+<section id="data-preprocessing" class="level2">
+<h2 class="anchored" data-anchor-id="data-preprocessing">Data Preprocessing</h2>
+<p>Before spatial analysis and visualization, all datasets were processed through a standardized geospatial preprocessing workflow.</p>
+<p>The preprocessing workflow includes:</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+
+A["Raw Datasets&lt;br/&gt;Species&lt;br/&gt;Land Cover&lt;br/&gt;Climate&lt;br/&gt;Socioeconomic"]
+
+B["Data Cleaning&lt;br/&gt;Missing value handling&lt;br/&gt;Format standardization"]
+
+C["CRS Standardization&lt;br/&gt;Projection alignment&lt;br/&gt;Area calculation"]
+
+D["Spatial Aggregation&lt;br/&gt;State-level extraction&lt;br/&gt;Zonal statistics"]
+
+E["Normalization&lt;br/&gt;Min-Max scaling"]
+
+F["Feature Engineering&lt;br/&gt;Species Density&lt;br/&gt;Protection Ratio&lt;br/&gt;Human Pressure&lt;br/&gt;Climate Vulnerability"]
+
+G["Final Analytical Dataset&lt;br/&gt;Biodiversity Risk Analysis"]
+
+A --&gt; B --&gt; C --&gt; D --&gt; E --&gt; F --&gt; G
+
+classDef data fill:#E8F3FF,stroke:#3B82F6,stroke-width:2px;
+classDef process fill:#EAF7EA,stroke:#22A06B,stroke-width:2px;
+classDef output fill:#FFF4E5,stroke:#F59E0B,stroke-width:2px;
+
+class A data;
+class B,C,D,E,F process;
+class G output;
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p>All spatial datasets were transformed into a common projected coordinate reference system to ensure accurate spatial measurements and area calculations.</p>
+<p>Raster-based environmental datasets, including land cover information, were summarized within state boundaries using spatial aggregation methods. Socioeconomic and biodiversity datasets were joined using state identifiers to create a unified state-level analytical dataset.</p>
+<p>Because variables were measured using different units and scales, continuous variables were normalized before composite index construction.</p>
+<p>The Min-Max normalization method was applied:</p>
+<p><span class="math display">X'=\frac{X-X_{min}}{X_{max}-X_{min}}</span></p>
+<p>where <span class="math inline">X'</span> represents the normalized value, allowing different indicators to be combined within a common scale.</p>
+<hr>
+</section>
+<section id="feature-engineering" class="level2">
+<h2 class="anchored" data-anchor-id="feature-engineering">Feature Engineering</h2>
+<p>Feature engineering transforms heterogeneous ecological, climatic, and anthropogenic variables into a common analytical framework. Let <span class="math inline">x_{ij}</span> denote the observed value of feature <span class="math inline">j</span> for state <span class="math inline">i</span>, where <span class="math inline">i = 1, \ldots, n</span> and <span class="math inline">j = 1, \ldots, m</span>. In this study, five core features are considered: Species Diversity (SD), Protected Range (PR), Habitat Pressure (HP), Climate Vulnerability (CV), and Population Density (PD).</p>
+<p>Because these variables have different units and scales, each feature is rescaled using Min–Max normalization. The direction of normalization depends on whether a higher value represents greater or lower biodiversity risk.</p>
+<p>For a positive risk indicator, where larger values imply greater risk, the normalized value is defined as</p>
+<p><span class="math display">z_{ij}^{(+)}
+=
+\frac{x_{ij} - \min_i(x_{ij})}
+{\max_i(x_{ij}) - \min_i(x_{ij})}.</span></p>
+<p>For a negative risk indicator, where larger values imply lower risk, the direction is reversed:</p>
+<p><span class="math display">z_{ij}^{(-)}
+=
+\frac{\max_i(x_{ij}) - x_{ij}}
+{\max_i(x_{ij}) - \min_i(x_{ij})}.</span></p>
+<p>The transformed values satisfy <span class="math inline">0 \leq z_{ij} \leq 1</span>, with larger values always indicating greater biodiversity risk. In the present framework, SD and PR are treated as negative risk indicators because higher species diversity and stronger protection are associated with lower risk. HP, CV, and PD are treated as positive risk indicators because higher habitat pressure, climatic vulnerability, and population density are associated with greater risk.</p>
+<p>To determine feature weights objectively, the Entropy Weight Method (EWM) is applied to the normalized feature matrix. First, the proportional contribution of state <span class="math inline">i</span> to feature <span class="math inline">j</span> is calculated as</p>
+<p><span class="math display">p_{ij}
+=
+\frac{z_{ij}}
+{\sum_{i=1}^{n} z_{ij}}.</span></p>
+<p>The information entropy of feature <span class="math inline">j</span> is then</p>
+<p><span class="math display">e_j
+=
+-k\sum_{i=1}^{n}p_{ij}\ln(p_{ij}),
+\qquad
+k=\frac{1}{\ln(n)}.</span></p>
+<p>For numerical stability, values of <span class="math inline">p_{ij}=0</span> are assigned a contribution of zero because <span class="math inline">\lim_{p\rightarrow 0^+}p\ln(p)=0</span>. The degree of diversification is defined as</p>
+<p><span class="math display">d_j = 1-e_j,</span></p>
+<p>and the objective weight of feature <span class="math inline">j</span> is</p>
+<p><span class="math display">w_j
+=
+\frac{d_j}
+{\sum_{j=1}^{m}d_j}.</span></p>
+<p>Features with greater cross-state variation contain more discriminating information and therefore receive larger weights. Finally, the Biodiversity Risk Score (BRS) for state <span class="math inline">i</span> is computed as the weighted sum of its normalized feature values:</p>
+<p><span class="math display">\mathrm{BRS}_i
+=
+100\sum_{j=1}^{m}w_j z_{ij}.</span></p>
+<p>The resulting score ranges from 0 to 100, where higher values indicate greater relative biodiversity risk.</p>
+<div id="generate-mock-data" class="cell">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> IPython.display <span class="im">import</span> HTML, display</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">2024</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>states <span class="op">=</span> [</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Alabama"</span>, <span class="st">"Alaska"</span>, <span class="st">"Arizona"</span>, <span class="st">"Arkansas"</span>, <span class="st">"California"</span>,</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Colorado"</span>, <span class="st">"Connecticut"</span>, <span class="st">"Delaware"</span>, <span class="st">"Florida"</span>, <span class="st">"Georgia"</span>,</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Hawaii"</span>, <span class="st">"Idaho"</span>, <span class="st">"Illinois"</span>, <span class="st">"Indiana"</span>, <span class="st">"Iowa"</span>, <span class="st">"Kansas"</span>,</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Kentucky"</span>, <span class="st">"Louisiana"</span>, <span class="st">"Maine"</span>, <span class="st">"Maryland"</span>, <span class="st">"Massachusetts"</span>,</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Michigan"</span>, <span class="st">"Minnesota"</span>, <span class="st">"Mississippi"</span>, <span class="st">"Missouri"</span>, <span class="st">"Montana"</span>,</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Nebraska"</span>, <span class="st">"Nevada"</span>, <span class="st">"New Hampshire"</span>, <span class="st">"New Jersey"</span>, <span class="st">"New Mexico"</span>,</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">"New York"</span>, <span class="st">"North Carolina"</span>, <span class="st">"North Dakota"</span>, <span class="st">"Ohio"</span>, <span class="st">"Oklahoma"</span>,</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Oregon"</span>, <span class="st">"Pennsylvania"</span>, <span class="st">"Rhode Island"</span>, <span class="st">"South Carolina"</span>,</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    <span class="st">"South Dakota"</span>, <span class="st">"Tennessee"</span>, <span class="st">"Texas"</span>, <span class="st">"Utah"</span>, <span class="st">"Vermont"</span>, <span class="st">"Virginia"</span>,</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Washington"</span>, <span class="st">"West Virginia"</span>, <span class="st">"Wisconsin"</span>, <span class="st">"Wyoming"</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>mock_data <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    <span class="st">"State"</span>: states,</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>    <span class="st">"SD"</span>: rng.uniform(<span class="fl">0.20</span>, <span class="fl">0.98</span>, size<span class="op">=</span><span class="dv">50</span>),</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>    <span class="st">"PR"</span>: rng.uniform(<span class="fl">0.05</span>, <span class="fl">0.95</span>, size<span class="op">=</span><span class="dv">50</span>),</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>    <span class="st">"HP"</span>: rng.uniform(<span class="fl">0.10</span>, <span class="fl">0.90</span>, size<span class="op">=</span><span class="dv">50</span>),</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>    <span class="st">"CV"</span>: rng.uniform(<span class="fl">0.15</span>, <span class="fl">0.95</span>, size<span class="op">=</span><span class="dv">50</span>),</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>    <span class="st">"PD"</span>: rng.lognormal(mean<span class="op">=</span><span class="fl">4.2</span>, sigma<span class="op">=</span><span class="fl">0.75</span>, size<span class="op">=</span><span class="dv">50</span>)</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>The mock dataset represents a reproducible state-level analytical input. SD, PR, HP, and CV are simulated as bounded indices, whereas PD is generated from a log-normal distribution to reflect the right-skewed distribution commonly observed in population-related variables.</p>
+<div id="normalize-features" class="cell">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>feature_directions <span class="op">=</span> {</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"SD"</span>: <span class="st">"negative"</span>,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"PR"</span>: <span class="st">"negative"</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"HP"</span>: <span class="st">"positive"</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"CV"</span>: <span class="st">"positive"</span>,</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"PD"</span>: <span class="st">"positive"</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>features <span class="op">=</span> <span class="bu">list</span>(feature_directions.keys())</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>normalized_data <span class="op">=</span> mock_data.copy()</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> feature, direction <span class="kw">in</span> feature_directions.items():</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    feature_min <span class="op">=</span> mock_data[feature].<span class="bu">min</span>()</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    feature_max <span class="op">=</span> mock_data[feature].<span class="bu">max</span>()</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    feature_range <span class="op">=</span> feature_max <span class="op">-</span> feature_min</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> feature_range <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>        normalized_data[feature] <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> direction <span class="op">==</span> <span class="st">"positive"</span>:</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>        normalized_data[feature] <span class="op">=</span> (</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>            (mock_data[feature] <span class="op">-</span> feature_min) <span class="op">/</span> feature_range</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>        normalized_data[feature] <span class="op">=</span> (</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>            (feature_max <span class="op">-</span> mock_data[feature]) <span class="op">/</span> feature_range</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>        )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Following normalization, all five features share the same interpretation: larger values represent greater biodiversity risk. This directional alignment allows the indicators to be aggregated without introducing contradictory sign conventions.</p>
+<div id="entropy-weight-method" class="cell">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>z <span class="op">=</span> normalized_data[features].to_numpy(dtype<span class="op">=</span><span class="bu">float</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>n_states <span class="op">=</span> z.shape[<span class="dv">0</span>]</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Avoid division by zero if a feature is constant.</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>column_sums <span class="op">=</span> z.<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>proportions <span class="op">=</span> np.divide(</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    z,</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    column_sums,</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    out<span class="op">=</span>np.zeros_like(z),</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    where<span class="op">=</span>column_sums <span class="op">!=</span> <span class="dv">0</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Entropy calculation with the convention 0 * log(0) = 0.</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>log_proportions <span class="op">=</span> np.zeros_like(proportions)</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>positive_mask <span class="op">=</span> proportions <span class="op">&gt;</span> <span class="dv">0</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>log_proportions[positive_mask] <span class="op">=</span> np.log(proportions[positive_mask])</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>k <span class="op">=</span> <span class="dv">1</span> <span class="op">/</span> np.log(n_states)</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>entropy <span class="op">=</span> <span class="op">-</span>k <span class="op">*</span> np.<span class="bu">sum</span>(proportions <span class="op">*</span> log_proportions, axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>diversification <span class="op">=</span> <span class="dv">1</span> <span class="op">-</span> entropy</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="co"># If all observations for a feature are identical, assign equal weights.</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> diversification.<span class="bu">sum</span>() <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>    weights <span class="op">=</span> np.repeat(<span class="dv">1</span> <span class="op">/</span> <span class="bu">len</span>(features), <span class="bu">len</span>(features))</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>    weights <span class="op">=</span> diversification <span class="op">/</span> diversification.<span class="bu">sum</span>()</span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>weights_table <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Feature"</span>: features,</span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Direction"</span>: [</span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>        feature_directions[feature].capitalize()</span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> feature <span class="kw">in</span> features</span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Entropy"</span>: entropy,</span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Diversification"</span>: diversification,</span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Weight"</span>: weights</span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Table 1 reports the entropy-based feature weights. The weights sum to one and are determined entirely by the empirical dispersion of each normalized indicator across states.</p>
+<div id="table-feature-weights" class="cell">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>weights_display <span class="op">=</span> weights_table.copy()</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>weights_display[<span class="st">"Entropy"</span>] <span class="op">=</span> weights_display[<span class="st">"Entropy"</span>].<span class="bu">map</span>(</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">lambda</span> value: <span class="ss">f"</span><span class="sc">{</span>value<span class="sc">:.4f}</span><span class="ss">"</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>weights_display[<span class="st">"Diversification"</span>] <span class="op">=</span> weights_display[<span class="st">"Diversification"</span>].<span class="bu">map</span>(</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">lambda</span> value: <span class="ss">f"</span><span class="sc">{</span>value<span class="sc">:.4f}</span><span class="ss">"</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>weights_display[<span class="st">"Weight"</span>] <span class="op">=</span> weights_display[<span class="st">"Weight"</span>].<span class="bu">map</span>(</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">lambda</span> value: <span class="ss">f"</span><span class="sc">{</span>value<span class="sc">:.4f}</span><span class="ss">"</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>weights_html <span class="op">=</span> weights_display.to_html(</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    index<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    classes<span class="op">=</span><span class="st">"table table-striped table-hover table-sm"</span>,</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    border<span class="op">=</span><span class="dv">0</span>,</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>    justify<span class="op">=</span><span class="st">"center"</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>weights_html <span class="op">=</span> weights_html.replace(</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>    <span class="st">"&gt;"</span>,</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    <span class="st">'&gt;&lt;caption&gt;&lt;strong&gt;Table 1:&lt;/strong&gt; Computed Feature Weights&lt;/caption&gt;'</span>,</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>display(HTML(</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>    <span class="ss">f"""</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a><span class="ss">    &lt;div class="table-responsive"&gt;</span></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a><span class="ss">      </span><span class="sc">{</span>weights_html<span class="sc">}</span></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a><span class="ss">    &lt;/div&gt;</span></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a><span class="ss">    """</span></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>The final BRS is computed by multiplying each normalized feature by its objective entropy weight and summing across features. Multiplication by 100 provides an interpretable score on a 0–100 scale.</p>
+<div id="calculate-brs" class="cell">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>normalized_data[<span class="st">"BRS"</span>] <span class="op">=</span> (</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    normalized_data[features].to_numpy() <span class="op">@</span> weights <span class="op">*</span> <span class="dv">100</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>risk_results <span class="op">=</span> (</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    normalized_data[[<span class="st">"State"</span>] <span class="op">+</span> features <span class="op">+</span> [<span class="st">"BRS"</span>]]</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    .sort_values(<span class="st">"BRS"</span>, ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    .reset_index(drop<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>risk_results[<span class="st">"Rank"</span>] <span class="op">=</span> risk_results.index <span class="op">+</span> <span class="dv">1</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Table 2 presents the ten states with the highest computed biodiversity risk scores. These rankings are illustrative because the underlying values are synthetic; with observed data, the same pipeline can be applied to produce reproducible state-level comparisons.</p>
+<div id="table-top-risk-states" class="cell">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>top_10 <span class="op">=</span> risk_results.head(<span class="dv">10</span>).copy()</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>top_10_display <span class="op">=</span> top_10[[<span class="st">"Rank"</span>, <span class="st">"State"</span>, <span class="st">"SD"</span>, <span class="st">"PR"</span>, <span class="st">"HP"</span>, <span class="st">"CV"</span>, <span class="st">"PD"</span>, <span class="st">"BRS"</span>]]</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> column <span class="kw">in</span> [<span class="st">"SD"</span>, <span class="st">"PR"</span>, <span class="st">"HP"</span>, <span class="st">"CV"</span>, <span class="st">"PD"</span>, <span class="st">"BRS"</span>]:</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    top_10_display[column] <span class="op">=</span> top_10_display[column].<span class="bu">map</span>(</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>        <span class="kw">lambda</span> value: <span class="ss">f"</span><span class="sc">{</span>value<span class="sc">:.2f}</span><span class="ss">"</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>top_10_html <span class="op">=</span> top_10_display.to_html(</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    index<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    classes<span class="op">=</span><span class="st">"table table-striped table-hover table-sm"</span>,</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    border<span class="op">=</span><span class="dv">0</span>,</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    justify<span class="op">=</span><span class="st">"center"</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>top_10_html <span class="op">=</span> top_10_html.replace(</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    <span class="st">"&gt;"</span>,</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    <span class="st">'&gt;&lt;caption&gt;&lt;strong&gt;Table 2:&lt;/strong&gt; Top 10 High Biodiversity Risk States&lt;/caption&gt;'</span>,</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>display(HTML(</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>    <span class="ss">f"""</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a><span class="ss">    &lt;div class="table-responsive"&gt;</span></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a><span class="ss">      </span><span class="sc">{</span>top_10_html<span class="sc">}</span></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a><span class="ss">    &lt;/div&gt;</span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a><span class="ss">    """</span></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<style>
+.table-responsive {
+  margin: 1rem 0 2rem 0;
+}
+
+.table-responsive table {
+  width: 100%;
+  font-size: 0.92rem;
+}
+
+.table-responsive caption {
+  caption-side: top;
+  text-align: left;
+  color: #333;
+  padding: 0.5rem 0;
+}
+
+.table-caption {
+  margin-bottom: 0;
+  background: transparent;
+}
+
+.table-caption caption {
+  caption-side: top;
+  text-align: left;
+  font-size: 0.95rem;
+  padding: 0 0 0.35rem 0;
+}
+
+/* Keep only top-level entries visible by default. Quarto's active-link
+   behavior expands the current section while scrolling; hover expands the
+   corresponding second-level list for quick navigation. */
+#TOC > ul > li > ul.collapse {
+  display: none;
+}
+
+#TOC > ul > li:hover > ul.collapse,
+#TOC > ul > li > ul:not(.collapse) {
+  display: block;
+}
+</style>
+</section>
+</section>
+<section id="spatial-statistical-analysis-and-results" class="level1">
+<h1>Spatial Statistical Analysis and Results</h1>
+<p>The biodiversity indicators and composite Biodiversity Risk Score (BRS) constructed in the preceding sections provide a common analytical basis for spatial statistical analysis. This section uses those state-level measures to examine the geographic distribution of biodiversity risk, identify spatial clustering patterns, and evaluate associations between risk and selected ecological, anthropogenic, conservation, and climatic indicators.</p>
+<p>The analyses distinguish descriptive spatial association from causal explanation. A correlation or spatial association is interpreted as evidence of a statistical relationship in the observed data, not as evidence that one variable directly produces another.</p>
+<section id="biodiversity-risk-score-construction" class="level2">
+<h2 class="anchored" data-anchor-id="biodiversity-risk-score-construction">Biodiversity Risk Score Construction</h2>
+<p>The composite BRS is calculated from the directionally aligned and normalized features using the objective entropy weights obtained above. For state <span class="math inline">i</span>, the score is defined as</p>
+<p><span class="math display">
+\mathrm{BRS}_i
+=
+100\sum_{j=1}^{m}w_j z_{ij},
+</span></p>
+<p>where <span class="math inline">z_{ij}</span> is the normalized risk-oriented value of feature <span class="math inline">j</span>, and <span class="math inline">w_j</span> is the corresponding entropy-derived weight. The score provides a comparable index of relative biodiversity risk across U.S. states. It should be interpreted as a composite ranking measure rather than as a direct estimate of species loss, extinction probability, or ecological damage.</p>
+<p>Figure <a href="#fig-brs-map" class="quarto-xref">Figure&nbsp;1</a> displays the final state-level BRS. Scores range from 1.8 to 61.9. The District of Columbia has the highest score (61.9), followed by Hawaii (40.3); among the 50 states, Texas, Illinois, and Florida are the three highest-scoring states. These are relative composite-risk rankings, not direct estimates of species loss or causal effects.</p>
+<div id="fig-brs-map" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-width="10" alt="Albers USA-projected choropleth map of final state-level Biodiversity Risk Scores on a 0–100 composite scale.">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-brs-map-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/biodiversity_risk_map.png" class="img-fluid figure-img" data-fig-width="10" alt="Albers USA-projected choropleth map of final state-level Biodiversity Risk Scores on a 0–100 composite scale.">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-brs-map-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: State-level Biodiversity Risk Score.
+</figcaption>
+</figure>
+</div>
+<div class="figure-note">
+<p><em>Note.</em> Scores are on a 0–100 composite-risk scale. State abbreviations appear above their BRS values; small northeastern jurisdictions use leader labels. The map uses an Albers USA projection and darker green indicates higher relative biodiversity risk. Source: <code>research_dataset.csv</code> (50 U.S. states and the District of Columbia).</p>
+</div>
+<div class="paper-table">
+<p><strong>Table 3. Top 10 Biodiversity Risk Scores</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: right;">Rank</th>
+<th style="text-align: left;">State</th>
+<th style="text-align: right;">Biodiversity Risk Score</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">District of Columbia</td>
+<td style="text-align: right;">61.9</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">Hawaii</td>
+<td style="text-align: right;">40.3</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">3</td>
+<td style="text-align: left;">Texas</td>
+<td style="text-align: right;">25.2</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4</td>
+<td style="text-align: left;">Illinois</td>
+<td style="text-align: right;">24.8</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5</td>
+<td style="text-align: left;">Florida</td>
+<td style="text-align: right;">24.7</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6</td>
+<td style="text-align: left;">California</td>
+<td style="text-align: right;">24.0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">7</td>
+<td style="text-align: left;">North Carolina</td>
+<td style="text-align: right;">23.5</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">8</td>
+<td style="text-align: left;">Pennsylvania</td>
+<td style="text-align: right;">22.9</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">9</td>
+<td style="text-align: left;">New Jersey</td>
+<td style="text-align: right;">22.7</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">10</td>
+<td style="text-align: left;">New York</td>
+<td style="text-align: right;">22.2</td>
+</tr>
+</tbody>
+</table>
+<p><em>Table note.</em> Scores are reported to one decimal place and sorted from highest to lowest. Values are calculated from the final analytical dataset and therefore should be interpreted as comparative composite-risk scores.</p>
+</div>
+<p>The observed distribution is concentrated at the lower end of the scale, with a small number of high-scoring jurisdictions. The District of Columbia and Hawaii stand apart from the rest of the ranking, while the next eight jurisdictions form a narrower high-risk group between 22.2 and 25.2. This ranking provides a transparent baseline for the spatial and correlation analyses that follow.</p>
+</section>
+<section id="correlation-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="correlation-analysis">Correlation Analysis</h2>
+<p>Pearson correlation analysis summarizes the direction and strength of linear association between the Biodiversity Risk Score (BRS) and four focal indicators: Species Density (SD), Human Pressure (HP), Protection Ratio (PR), and Climate Vulnerability (CV). All variables are drawn from the final state-level analytical dataset, so the results refer to associations among 50 U.S. states and the District of Columbia.</p>
+<p>For two variables <span class="math inline">X</span> and <span class="math inline">Y</span>, the Pearson correlation coefficient is</p>
+<p><span class="math display">
+r_{XY}
+=
+\frac{\sum_{i=1}^{n}(X_i-\bar{X})(Y_i-\bar{Y})}
+{\sqrt{\sum_{i=1}^{n}(X_i-\bar{X})^2}
+\sqrt{\sum_{i=1}^{n}(Y_i-\bar{Y})^2}}.
+</span></p>
+<p>The coefficient ranges from <span class="math inline">-1</span> to <span class="math inline">1</span>: its sign indicates the direction of linear association and its absolute magnitude indicates strength. Because the data are aggregated at the state level (<span class="math inline">n = 51</span>), the results describe state-level associations rather than individual-level relationships.</p>
+<p>For descriptive interpretation, this study classifies thresholds as follows:</p>
+<ul>
+<li><strong>Strong association</strong>: <span class="math inline">|r| \ge 0.70</span></li>
+<li><strong>Moderate association</strong>: <span class="math inline">0.40 \le |r| &lt; 0.70</span></li>
+<li><strong>Weak association</strong>: <span class="math inline">|r| &lt; 0.40</span></li>
+</ul>
+<p>These thresholds describe observed linear co-variation and do not imply causal mechanisms.</p>
+<div id="fig-correlation-heatmap" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-width="10" alt="Lower-triangle 5 by 5 Pearson correlation matrix for Biodiversity Risk Score, Species Density, Human Pressure, Protection Ratio, and Climate Vulnerability.">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-correlation-heatmap-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/correlation_analysis.png" class="img-fluid figure-img" data-fig-width="10" alt="Lower-triangle 5 by 5 Pearson correlation matrix for Biodiversity Risk Score, Species Density, Human Pressure, Protection Ratio, and Climate Vulnerability.">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-correlation-heatmap-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Pearson correlation matrix for the Biodiversity Risk Score and four core state-level indicators.
+</figcaption>
+</figure>
+</div>
+<div class="figure-note">
+<p><em>Note.</em> The analysis includes 51 state-level units (50 U.S. states and the District of Columbia). Cells report two-sided Pearson coefficients; * <span class="math inline">p &lt;
+.05</span>, ** <span class="math inline">p &lt; .01</span>, and *** <span class="math inline">p &lt; .001</span>. Source: <code>research/results/correlation_results.csv</code>. Because BRS shares constructed inputs with several indicators, these correlations are descriptive and should not be interpreted as independent causal effects.</p>
+</div>
+<p>The empirical results summarize the direction, strength, and statistical significance of state-level associations between BRS and the four focal indicators:</p>
+<ul>
+<li><strong>Species Density (SD)</strong>: Demonstrates a <strong>strong positive association</strong> with BRS (<span class="math inline">r = 0.705, p &lt; .001</span>), indicating that states with greater species concentration correspond to higher overall risk scores.</li>
+<li><strong>Human Pressure (HP)</strong>: Exhibits a <strong>moderate positive association</strong> with BRS (<span class="math inline">r = 0.677, p &lt; .001</span>). Human Pressure also co-varies strongly with Species Density (<span class="math inline">r = 0.686, p &lt; .001</span>), indicating that these two measures tend to be jointly elevated across states.</li>
+<li><strong>Climate Vulnerability (CV)</strong>: Displays a <strong>moderate positive association</strong> with BRS (<span class="math inline">r = 0.473, p &lt; .001</span>). Climate Vulnerability has negligible linear associations with the other three indicators (<span class="math inline">|r| &lt; 0.08</span>, <span class="math inline">p &gt; .05</span>), indicating that it contributes a comparatively distinct state-level dimension.</li>
+<li><strong>Protection Ratio (PR)</strong>: Shows a <strong>weak negative association</strong> with BRS (<span class="math inline">r = -0.100, p = .487</span>). However, this relationship is <strong>not statistically significant</strong>, pointing to a potential spatial disconnect between current state-level protection coverage and high-risk regions.</li>
+</ul>
+<div class="paper-table">
+<p><strong>Table 4. Pearson Correlations with Biodiversity Risk Score</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Indicator</th>
+<th style="text-align: right;">Pearson <span class="math inline">r</span> with BRS</th>
+<th style="text-align: right;">Sample size</th>
+<th style="text-align: right;">p-value / uncertainty</th>
+<th style="text-align: left;">Interpretation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Species Density</td>
+<td style="text-align: right;">0.705</td>
+<td style="text-align: right;">51</td>
+<td style="text-align: right;">&lt; .001 ***</td>
+<td style="text-align: left;">Strong positive association</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Human Pressure</td>
+<td style="text-align: right;">0.677</td>
+<td style="text-align: right;">51</td>
+<td style="text-align: right;">&lt; .001 ***</td>
+<td style="text-align: left;">Moderate positive association</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Protection Ratio (PR)</td>
+<td style="text-align: right;">-0.100</td>
+<td style="text-align: right;">51</td>
+<td style="text-align: right;">.487 (ns)</td>
+<td style="text-align: left;">Weak negative association; not statistically distinguishable from zero</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Climate Vulnerability (CV)</td>
+<td style="text-align: right;">0.473</td>
+<td style="text-align: right;">51</td>
+<td style="text-align: right;">&lt; .001 ***</td>
+<td style="text-align: left;">Moderate positive association</td>
+</tr>
+</tbody>
+</table>
+<p><em>Table note.</em> Pearson tests are two-sided. Association strength is classified as strong when <span class="math inline">|r| \ge 0.70</span>, moderate when <span class="math inline">0.40 \le |r| &lt; 0.70</span>, and weak when <span class="math inline">|r| &lt; 0.40</span>. Results are based on 51 state-level units (50 U.S. states and the District of Columbia). Because BRS incorporates some of these indicators by construction, the correlations are descriptive rather than evidence of causal effects.</p>
+</div>
+</section>
+<section id="spatial-autocorrelation-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="spatial-autocorrelation-analysis">Spatial Autocorrelation Analysis</h2>
+<p>Spatial autocorrelation analysis evaluates whether nearby states exhibit more similar or dissimilar BRS values than would be expected under a spatially random arrangement. The analysis requires a spatial weights matrix <span class="math inline">W</span>, which should be defined explicitly in the final implementation—for example, using state contiguity or a distance-based specification. The selected weights definition, row-standardization rule, and treatment of isolated spatial units should be documented because they affect the interpretation of the statistic.</p>
+<p>Global Moran’s <span class="math inline">I</span> is calculated as</p>
+<p><span class="math display">
+I
+=
+\frac{n}{W}
+\frac{\sum_{i=1}^{n}\sum_{j=1}^{n}w_{ij}(y_i-\bar{y})(y_j-\bar{y})}
+{\sum_{i=1}^{n}(y_i-\bar{y})^2},
+</span></p>
+<p>where <span class="math inline">y_i</span> is the BRS for state <span class="math inline">i</span>, <span class="math inline">\bar{y}</span> is the mean BRS, <span class="math inline">w_{ij}</span> is an element of the spatial weights matrix, and <span class="math inline">W=\sum_i\sum_jw_{ij}</span>. A positive Moran’s <span class="math inline">I</span> indicates that similar values tend to be located near one another, whereas a negative value indicates that neighboring areas tend to have dissimilar values.</p>
+<p>The final analysis uses row-standardized Queen contiguity weights. The observed Moran’s <span class="math inline">I</span> of 0.146 is greater than the expected value of -0.020 under spatial randomness. Because environment risk and biodiversity attributes are hypothesized to form positive geographic clusters rather than dispersed checkerboard patterns, a one-sided (upper-tailed) random permutation test ws pre-specified. Based on 9,999 iterations, the test yields <span class="math inline">p = .037</span>, indicating weak but statistically significant positive spatial autocorrelation at the 5% level(the corresponding two-sided <span class="math inline">p = .060</span>).</p>
+<div class="paper-table">
+<p><strong>Table 5. Global Moran’s I Results</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Variable</th>
+<th style="text-align: left;">Spatial weights specification</th>
+<th style="text-align: right;">Observed Moran’s <span class="math inline">I</span></th>
+<th style="text-align: right;">Expected <span class="math inline">I</span></th>
+<th style="text-align: right;">Permutation p-value</th>
+<th style="text-align: left;">Interpretation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Biodiversity Risk Score</td>
+<td style="text-align: left;">Queen contiguity; row-standardized</td>
+<td style="text-align: right;">0.146</td>
+<td style="text-align: right;">-0.020</td>
+<td style="text-align: right;">.037 (upper-tailed)</td>
+<td style="text-align: left;">Weak positive spatial autocorrelation</td>
+</tr>
+</tbody>
+</table>
+<p><em>Table note.</em> Results use 51 state-level units and 111 undirected Queen-neighbor links. Alaska and Hawaii have no Queen-contiguous neighbors and therefore have zero spatial lag. The p-value is based on 9,999 random permutations under the directional alternative of positive clustering; the corresponding two-sided permutation p-value is .060.</p>
+</div>
+<p>The Moran scatterplot compares each state’s standardized BRS with the row-standardized spatial lag of its neighbors. The positive trend is consistent with the global result: states with higher (lower) BRS tend, on average, to be near states with higher (lower) BRS. The quadrants are descriptive spatial configurations and do not identify local statistically significant clusters.</p>
+<div id="fig-morans-i" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-width="10" alt="Moran scatterplot of standardized Biodiversity Risk Score and row-standardized Queen-contiguity spatial lag, with Alaska and Hawaii shown as isolates.">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-morans-i-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/morans_I_plot.png" class="img-fluid figure-img" data-fig-width="10" alt="Moran scatterplot of standardized Biodiversity Risk Score and row-standardized Queen-contiguity spatial lag, with Alaska and Hawaii shown as isolates.">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-morans-i-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: Global Moran’s I scatterplot of BRS.
+</figcaption>
+</figure>
+</div>
+<div class="figure-note">
+<p><em>Note.</em> Queen contiguity weights are row-standardized. The plotted statistic is Global Moran’s <span class="math inline">I = 0.146</span>; the upper-tailed permutation p-value is .037 from 9,999 random permutations. Alaska and Hawaii are shown separately because they have no Queen-contiguous neighbors.</p>
+</div>
+</section>
+<section id="hotspot-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="hotspot-analysis">Hotspot Analysis</h2>
+<p>Getis–Ord <span class="math inline">G_i^*</span> analysis is used to identify local concentrations of high or low BRS values. Whereas global Moran’s <span class="math inline">I</span> summarizes overall spatial dependence, the <span class="math inline">G_i^*</span> statistic evaluates whether a state and its specified neighbors collectively exhibit unusually high or unusually low values relative to the study area. The subscript <span class="math inline">i</span> identifies the focal state and the star denotes that the focal state is included in its own neighborhood sum.</p>
+<p>For a value <span class="math inline">x_j</span> observed at location <span class="math inline">j</span>, the standardized Getis–Ord statistic can be written as</p>
+<p><span class="math display">
+G_i^*
+=
+\frac{\sum_{j=1}^{n}w_{ij}x_j-\bar{X}\sum_{j=1}^{n}w_{ij}}
+{S\sqrt{\frac{n\sum_{j=1}^{n}w_{ij}^2-
+\left(\sum_{j=1}^{n}w_{ij}\right)^2}{n-1}}},
+</span></p>
+<p>where <span class="math inline">\bar{X}</span> and <span class="math inline">S</span> are the mean and standard deviation of the input variable, and <span class="math inline">w_{ij}</span> represents the spatial relationship between locations <span class="math inline">i</span> and <span class="math inline">j</span>. Positive statistically significant <span class="math inline">G_i^*</span> values identify high-value clusters, commonly described as hotspots; negative statistically significant values identify low-value clusters, commonly described as coldspots.</p>
+<p>The final analysis uses binary Queen-contiguity weights with self-inclusion, as required for <span class="math inline">G_i^*</span>. Alaska and Hawaii are excluded from the local test because they have no Queen-contiguous neighbors, leaving 49 contiguous state-level units. Significance is evaluated with 9,999 random permutations and two-sided unadjusted pseudo p-values. Benjamini–Hochberg false-discovery-rate (FDR) adjustment is then applied across the 49 local tests.</p>
+<div id="fig-hotspot-map" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-width="10" alt="Albers-projected U.S. map of nominal Getis--Ord Gi-star hotspot and coldspot classifications for the Biodiversity Risk Score, with Alaska and Hawaii marked as not assessed.">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-hotspot-map-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/getis_ord_gi_star_hotspot_map.png" class="img-fluid figure-img" data-fig-width="10" alt="Albers-projected U.S. map of nominal Getis--Ord Gi-star hotspot and coldspot classifications for the Biodiversity Risk Score, with Alaska and Hawaii marked as not assessed.">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-hotspot-map-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4: Getis–Ord <span class="math inline">G_i^*</span> local hotspot map of BRS.
+</figcaption>
+</figure>
+</div>
+<div class="figure-note">
+<p><em>Note.</em> Map classes use unadjusted two-sided permutation <span class="math inline">p &lt; .05</span> and are exploratory. No local <span class="math inline">G_i^*</span> statistic remains significant after Benjamini–Hochberg FDR correction (<span class="math inline">q &gt; .05</span> for all 49 tested units). Alaska and Hawaii are not assessed because they have no Queen-contiguous neighbors. State abbreviations appear above their corresponding BRS values; small northeastern jurisdictions use leader labels.</p>
+</div>
+<div class="paper-table hotspot-table">
+<p><strong>Table 6. Getis–Ord <span class="math inline">G_i^*</span> Hotspot Summary</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Classification</th>
+<th style="text-align: right;">Number of states</th>
+<th style="text-align: left;">State(s) with local statistic</th>
+<th style="text-align: left;">FDR-adjusted inference</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Nominal high-value hotspot</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;"><strong>District of Columbia</strong> (<span class="math inline">G_i^* = 2.592</span>, <span class="math inline">p = .040</span>)<br><strong>Virginia</strong> (<span class="math inline">G_i^* = 2.072</span>, <span class="math inline">p = .046</span>)</td>
+<td style="text-align: left;">None remain significant (<span class="math inline">q = .416</span>)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Nominal low-value coldspot</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: left;"><strong>Montana</strong> (<span class="math inline">G_i^* = -2.748</span>, <span class="math inline">p = .015</span>)<br><strong>South Dakota</strong> (<span class="math inline">G_i^* = -2.161</span>, <span class="math inline">p = .039</span>)<br><strong>Wyoming</strong> (<span class="math inline">G_i^* = -2.430</span>, <span class="math inline">p = .021</span>)</td>
+<td style="text-align: left;">None remain significant (<span class="math inline">q = .416</span>)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Not significant</td>
+<td style="text-align: right;">44</td>
+<td style="text-align: left;">Remaining contiguous states (unadjusted <span class="math inline">p \ge .05</span>)</td>
+<td style="text-align: left;">Not significant</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Not assessed</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">Alaska; Hawaii (no Queen-contiguous neighbors)</td>
+<td style="text-align: left;">Excluded from local test</td>
+</tr>
+</tbody>
+</table>
+<p><em>Table note.</em> Local statistics use binary Queen-contiguity weights with self-inclusion. Unadjusted two-sided permutation p-values use 9,999 random permutations (seed = 20260724). FDR values are Benjamini–Hochberg adjusted across the 49 tested contiguous units.</p>
+</div>
+<p>At the unadjusted level, the District of Columbia and Virginia form nominal high-value local clusters, while Montana, South Dakota, and Wyoming form nominal low-value local clusters. However, none of these local results remains significant after FDR correction. The mapped classes should therefore be read as exploratory patterns rather than robust evidence of persistent hotspot or coldspot clusters; sensitivity to alternative weights specifications should be assessed before making regional policy claims.</p>
+</section>
+</section>
+<section id="visualization-and-interactive-analysis" class="level1">
+<h1>Visualization and Interactive Analysis</h1>
+<p>The interactive dashboard is the visual companion to the state-level analysis, not a replacement for the statistical evidence reported above. It uses the same validated records as the maps, rankings, and state reports in this paper, while the paper preserves fixed figures, methods, and interpretation boundaries. The two outputs remain separate portfolio artifacts: this report documents the analysis, and the <a href="../index.html" target="_blank">companion dashboard</a> supports exploration of the same state-level records.</p>
+<section id="dashboard-design" class="level2">
+<h2 class="anchored" data-anchor-id="dashboard-design">Dashboard Design</h2>
+<p>The dashboard is designed as an interactive visualization system rather than a second presentation of the paper’s results. Its workflow moves from spatial orientation, to cross-state comparison, to the inspection of a selected state.</p>
+<div id="fig-interactive-framework" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-width="10">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-interactive-framework-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/interactive_exploration_framework.png" class="img-fluid figure-img" data-fig-width="10">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-interactive-framework-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;5: Dashboard workflow linking spatial overview, state comparison, and state-level detail.
+</figcaption>
+</figure>
+</div>
+<div class="figure-note">
+<p><em>Note.</em> The workflow links a map and legend, a ranked comparison, and a selected-state indicator view. Diagram elements are schematic rather than additional data displays; the dashboard uses the same 51 state-level records as the paper and introduces no new analysis.</p>
+</div>
+</section>
+<section id="interactive-workflow" class="level2">
+<h2 class="anchored" data-anchor-id="interactive-workflow">Interactive Workflow</h2>
+<div id="fig-overview-comparison-detail" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-width="10">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-overview-comparison-detail-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/overview_comparison_detail.png" class="img-fluid figure-img" data-fig-width="10">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-overview-comparison-detail-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6: UI layout architecture for the interactive visualization system.
+</figcaption>
+</figure>
+</div>
+<div class="figure-note">
+<p><em>Note.</em> The interface separates a control rail, spatial canvas, state report, and ranking-and-comparison workspace. The diagram shows layout and information coordination only; it intentionally omits specific states and values.</p>
+</div>
+<p>Users select an analysis mode and variable from the control rail, then use the map and ranking as linked views. A selection made in either view updates the State Report, while hover labels, search, zoom/reset controls, and ranking filters support inspection. These controls expose the reported state-level records; they do not create a new predictive model or change the statistical interpretation established in the paper.</p>
+</section>
+<section id="regional-comparative-exploration" class="level2">
+<h2 class="anchored" data-anchor-id="regional-comparative-exploration">Regional Comparative Exploration</h2>
+<div id="fig-regional-profile" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-width="10">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-regional-profile-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/regional_parallel_profiles.png" class="img-fluid figure-img" data-fig-width="10">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-regional-profile-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;7: Parallel-coordinate comparison of Biodiversity Risk Score, Human Pressure, Climate Vulnerability, and Protected Area Coverage for California, Florida, and Texas.
+</figcaption>
+</figure>
+</div>
+<div class="figure-note">
+<p><em>Note.</em> Lines compare California, Florida, and Texas across Biodiversity Risk Score, Human Pressure, Climate Vulnerability, and Protected Area Coverage. Each axis is min–max normalized within the selected three-state set; Table 7 reports source-scale values. Protected Area Coverage is shown as coverage, not reverse-coded risk.</p>
+</div>
+<div class="paper-table regional-table">
+<p><strong>Table 7. Comparative profiles for California, Florida, and Texas</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">State</th>
+<th style="text-align: right;">Biodiversity Risk Score</th>
+<th style="text-align: right;">Risk Overall</th>
+<th style="text-align: right;">Protected area coverage</th>
+<th style="text-align: right;">Human Pressure</th>
+<th style="text-align: right;">Climate Vulnerability</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">California</td>
+<td style="text-align: right;">24.04</td>
+<td style="text-align: right;">100.00</td>
+<td style="text-align: right;">23.47%</td>
+<td style="text-align: right;">4.69</td>
+<td style="text-align: right;">60.81</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Florida</td>
+<td style="text-align: right;">24.65</td>
+<td style="text-align: right;">96.43</td>
+<td style="text-align: right;">16.49%</td>
+<td style="text-align: right;">6.23</td>
+<td style="text-align: right;">55.47</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Texas</td>
+<td style="text-align: right;">25.18</td>
+<td style="text-align: right;">98.21</td>
+<td style="text-align: right;">2.04%</td>
+<td style="text-align: right;">2.46</td>
+<td style="text-align: right;">62.60</td>
+</tr>
+</tbody>
+</table>
+<p><em>Table note.</em> Values are reported on their source scales from <code>research_dataset.csv</code>; Protected area coverage is <code>Protected_Pct</code>.</p>
+</div>
+<p>The comparison illustrates why linked views are useful. Texas has the highest BRS of the three (25.18) and the lowest protected-area coverage (2.04%). Florida has the highest Human Pressure value (6.23), whereas California combines the maximum Risk Overall value (100.00) with the greatest coverage (23.47%). A user can select each state in the dashboard, compare its State Report with the ranking, and apply a risk/protection filter to make these contrasts explicit.</p>
+</section>
+</section>
+<section id="discussion" class="level1">
+<h1>Discussion</h1>
+<section id="key-insights-policy-implications" class="level2">
+<h2 class="anchored" data-anchor-id="key-insights-policy-implications">Key Insights &amp; Policy Implications</h2>
+<div id="fig-statistical-synthesis" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-width="10">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-statistical-synthesis-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/statistical_evidence_synthesis.png" class="img-fluid figure-img" data-fig-width="10">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-statistical-synthesis-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;8: Statistical evidence and interpretation for Biodiversity Risk Score.
+</figcaption>
+</figure>
+</div>
+<div class="figure-note">
+<p><em>Note.</em> The left panel summarizes the focal Pearson results and reported global Moran’s <span class="math inline">I</span> statistic; the right panel states their intended interpretive use. Spatial inference is based on the 9,999-permutation and FDR results reported in Tables 5–6. The figure introduces no new test or policy ranking.</p>
+</div>
+<p>The BRS is best used as a comparative screening measure, not as a direct estimate of extinction probability or ecological damage. The ranking identifies the District of Columbia and Hawaii as distinct high-scoring jurisdictions and places Texas, Illinois, Florida, California, and North Carolina within the next high-risk group. BRS is strongly associated with Species Density (<span class="math inline">r = 0.705</span>) and moderately associated with Human Pressure (<span class="math inline">r = 0.677</span>) and Climate Vulnerability (<span class="math inline">r = 0.473</span>); its association with Protection Ratio is weak and not statistically distinguishable from zero (<span class="math inline">r = -0.100</span>, <span class="math inline">p = .487</span>). Because several indicators overlap with BRS construction, these correlations are descriptive rather than independent causal effects.</p>
+<p>Spatial results support comparison but not deterministic hotspot targeting. Global Moran’s <span class="math inline">I</span> indicates weak positive spatial autocorrelation (<span class="math inline">I = 0.146</span>; upper-tailed permutation <span class="math inline">p = .037</span>), while the two-sided permutation result is <span class="math inline">p = .060</span>. Local <span class="math inline">G_i^*</span> identifies nominal high-value signals in the District of Columbia and Virginia and nominal low-value signals in Montana, South Dakota, and Wyoming, but none remains significant after false-discovery-rate adjustment. The dashboard can therefore help users inspect and compare state profiles, while the paper provides the context needed to avoid reading a nominal local pattern as a definitive regional cluster.</p>
+</section>
+<section id="limitations-future-work" class="level2">
+<h2 class="anchored" data-anchor-id="limitations-future-work">Limitations &amp; Future Work</h2>
+<div class="paper-table limitations-table">
+<p><strong>Table 8. Interpretation limits and next analytical steps</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Analytical issue</th>
+<th style="text-align: left;">Why it matters</th>
+<th style="text-align: left;">Next step</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">State-level aggregation</td>
+<td style="text-align: left;">State averages can conceal within-state variation and do not support site-level inference.</td>
+<td style="text-align: left;">Incorporate finer geographic units and time-varying environmental data.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Composite-score construction</td>
+<td style="text-align: left;">BRS depends on selected variables, risk direction, and entropy-derived weights; component correlations are not independent effects.</td>
+<td style="text-align: left;">Test alternative feature sets, risk orientations, and weighting schemes.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Spatial specification</td>
+<td style="text-align: left;">Results depend on Queen-contiguity weights; Alaska and Hawaii lack Queen-contiguous neighbors.</td>
+<td style="text-align: left;">Compare alternative spatial weights and explicitly report disconnected units.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Multiple local tests</td>
+<td style="text-align: left;">Nominal local <span class="math inline">G_i^*</span> classes do not remain significant after FDR correction.</td>
+<td style="text-align: left;">Treat local patterns as hypotheses and validate them with independent conservation outcomes.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Dashboard interpretation</td>
+<td style="text-align: left;">Interactive filtering can make descriptive contrasts appear more definitive than they are.</td>
+<td style="text-align: left;">Expose assumptions, provenance, and sensitivity views alongside each dashboard output.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The next iteration should preserve the separation of roles established here: the paper records methods, fixed outputs, and interpretation limits; the dashboard supports transparent exploration. Together, they provide a portfolio presentation that remains useful for review without overstating what the state-level data can establish.</p>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

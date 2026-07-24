@@ -1,0 +1,12 @@
+Getis-Ord Gi* Hotspot Analysis: Biodiversity Risk Score
+=========================================================
+Input: 49 contiguous state-level units from data/research_dataset.csv
+Excluded from local contiguity test: Alaska and Hawaii (no Queen-contiguous neighbors)
+Spatial weights: binary Queen contiguity with self-inclusion for Gi*
+Inference: 9,999 random permutations; two-sided unadjusted pseudo p-values; seed 20260724
+Multiple testing: Benjamini-Hochberg false-discovery-rate adjustment across 49 tested units
+Nominal high-value hotspots (unadjusted p < .05): District of Columbia, Virginia
+Nominal low-value coldspots (unadjusted p < .05): Montana, South Dakota, Wyoming
+Clusters significant after FDR adjustment (q < .05): 0
+Interpretation:
+The unadjusted map identifies localized high- and low-value patterns, but no location remains significant after correction for the 49 simultaneous local tests. The nominal results should therefore be treated as exploratory rather than as robust hotspot or coldspot evidence.

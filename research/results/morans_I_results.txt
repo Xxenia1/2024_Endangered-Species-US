@@ -1,0 +1,14 @@
+Global Moran's I Results: Biodiversity Risk Score
+==================================================
+Input: 51 state-level Biodiversity Risk Scores from data/research_dataset.csv
+Spatial weights: Queen contiguity from data/final_data.geojson; row-standardized
+Queen neighbor links: 111 undirected links
+Isolated units with no Queen neighbors: Alaska, Hawaii
+Observed Moran's I: 0.145671
+Expected Moran's I under spatial randomness: -0.020000
+Permutation test: 9,999 random permutations; seed 20260722
+Permutation p-value (upper-tailed, positive clustering): 0.0368
+Permutation p-value (two-sided): 0.0602
+Interpretation:
+The positive observed statistic is larger than expected under spatial randomness. Under the pre-specified upper-tailed permutation test for positive clustering, the result provides statistically significant but weak evidence that neighboring state-level Biodiversity Risk Scores are more similar than expected by chance.
+The two-sided result is reported for transparency; the primary inferential test is upper-tailed because the stated question is whether risk is positively clustered.
