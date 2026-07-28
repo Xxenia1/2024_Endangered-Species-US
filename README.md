@@ -1,31 +1,22 @@
-# Designing an Interactive Human-AI Decision Support System for Endangered Species Conservation
+# Quantifying U.S. Biodiversity Risk
 
-Recent advances in machine learning and geospatial modeling have significantly improved the ability to predict habitat suitability for endangered species. However, despite increasing predictive accuracy, these models are often difficult for conservation practitioners and stakeholders to interpret and apply in real-world decision-making contexts. As a result, there is a growing gap between model outputs and actionable conservation decisions.
-
-This gap highlights the need for human-centered systems that not only generate predictions, but also support interpretation, exploration, and trust in AI-assisted ecological decision-making.
-
-## Keywords
-Human-Computer Interaction (HCI), Information Visualization, Human-AI Interaction, Explainable AI (XAI), Decision Support Systems, Geospatial Visualization, Visual Analytics, Environmental Decision-Making
----
-
-## 1. Project Positioning & Research Questions
-
-While biodiversity faces unprecedented acceleration in extinction rates, existing public platforms and institutional databases often present data through fragmented, static tables. This interactive system aims to help people understand and use AI-generated ecological predictions in conservation decision-making.
-
-### Core Research Questions
-* **RQ1:** How can interactive visualization improve users’ understanding of AI-generated habitat suitability predictions?
-* **RQ2:** How can uncertainty in ecological prediction models be effectively communicated to support decision-making?
-* **RQ3:** How does explainable AI influence trust and confidence in conservation decision-making?
-* **RQ4:** How can human-AI interaction design improve decision quality in endangered species conservation?
+An interactive geospatial visualization project integrating biodiversity, environmental, and socioeconomic indicators to support state-level biodiversity risk assessment across the United States.
 
 ---
 
-## 2. Framework & Objectives
+## 🌐 Live Project
 
-* **Spatial Exploration:** Uncover underlying spatial patterns and geographical clustering of endangered species at the national and state levels.
-* **Driver Analysis:** Quantify the impact of anthropogenic pressures versus natural environmental buffers.
-* **Predictive Risk Modeling:** Construct a forward-looking risk assessment score to pinpoint future ecological vulnerability.
-* **Decision Support:** Provide an interactive, data-driven dashboard to assist policymakers and conservationists in resource allocation.
+### Interactive Dashboard
+
+https://xxenia1.github.io/2024_Endangered-Species-US/
+
+Interactive exploration of biodiversity patterns, environmental risk, conservation indicators, and state-level comparisons.
+
+### Research Paper
+
+https://xxenia1.github.io/2024_Endangered-Species-US/research/
+
+Technical report describing the analytical framework, feature engineering, spatial statistical analysis, visualization design, and findings.
 
 ---
 
